@@ -1,4 +1,4 @@
-const versionRoute = require('./version/route.js')
+const versionRoute = require('./routes/version.js')
 
 /*
 Registra las rutas en el servidor de Fastify.
