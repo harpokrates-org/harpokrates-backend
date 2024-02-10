@@ -19,7 +19,7 @@ module.exports = async function (fastify, opts, next) {
       if (!error.code) error = new ServerError(error.message)
       reply
           .type('application/json')
-          .code(500)
+          .code(error.statusCode)
           .send({
             code: error.code,
             message: error.message
