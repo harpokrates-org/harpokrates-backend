@@ -1,7 +1,5 @@
 require('dotenv').config();
-const Fastify = require('fastify')
-const addRoutes = require('./router.js');
-const errorHandler = require('./utils/errorHandler.js');
+const FastifyWrapper = require('./fastify.js');
 
 /*
 Inicio de la aplicación.
@@ -9,18 +7,12 @@ Inicializa el servidor de Fastify y lo encinde.
 */
 async function start() {
   try {
-    const fastify = Fastify({
-      logger: true
-    })
-    
+    const app = new FastifyWrapper()
 
-    fastify.setErrorHandler(errorHandler)
-    addRoutes(fastify)
-
-    await fastify.listen({
-      port: process.env.PORT,
-      host: process.env.HOST
-    })
+    app.start(
+      process.env.PORT,
+      process.env.HOST
+    )
   } catch (err) {
     console.log(err)
     process.exit(1)
