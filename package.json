@@ -7,7 +7,8 @@
     "VERSION": "1.0.0"
   },
   "scripts": {
-    "start": "node ./src/server"
+    "start": "node ./src/server",
+    "eslint": "npx eslint ."
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "dependencies": {
     "dotenv": "^16.4.1",
     "fastify": "^4.26.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0"
   }
 }
