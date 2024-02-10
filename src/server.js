@@ -1,6 +1,7 @@
 require('dotenv').config();
 const Fastify = require('fastify')
-const addRoutes = require('./router.js')
+const addRoutes = require('./router.js');
+const errorHandler = require('./utils/errorHandler.js');
 
 /*
 Inicio de la aplicación.
@@ -12,6 +13,8 @@ async function start() {
       logger: true
     })
     
+
+    fastify.setErrorHandler(errorHandler)
     addRoutes(fastify)
 
     await fastify.listen({
