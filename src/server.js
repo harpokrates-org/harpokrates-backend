@@ -2,6 +2,10 @@ require('dotenv').config();
 const Fastify = require('fastify')
 const addRoutes = require('./router.js')
 
+/*
+Inicio de la aplicación.
+Inicializa el servidor de Fastify y lo encinde.
+*/
 async function start() {
   try {
     const fastify = Fastify({
