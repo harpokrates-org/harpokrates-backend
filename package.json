@@ -1,0 +1,26 @@
+{
+  "name": "harpokrates-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "env": {
+    "VERSION": "1.0.0"
+  },
+  "scripts": {
+    "start": "node ./src/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harpokrates-org/harpokrates-backend.git"
+  },
+  "author": "Victor Bravo and Eugenia Franchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harpokrates-org/harpokrates-backend/issues"
+  },
+  "homepage": "https://github.com/harpokrates-org/harpokrates-backend#readme",
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "fastify": "^4.26.0"
+  }
+}
