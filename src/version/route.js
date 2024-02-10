@@ -1,5 +1,6 @@
 const { version } = require('../../package.json');
 const VersionNotFoundError = require('../errors/versionErrors');
+const ServerError = require('../errors/serverErrors');
 
 /*
 Declaración de la ruta /version.
@@ -15,6 +16,7 @@ module.exports = async function (fastify, opts, next) {
           .code(200)
           .send({version: version})
     } catch(error) {
+      if (!error.code) error = new ServerError(error.message)
       reply
           .type('application/json')
           .code(500)
