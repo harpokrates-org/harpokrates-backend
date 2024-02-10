@@ -24,4 +24,4 @@ RUN if [[ -z "$RENDER" ]]; then \
   apk add git; \
   fi; 
 
-CMD ["node", "src/server-js"] 
+CMD ["node", "src/server.js"] 
