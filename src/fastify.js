@@ -1,12 +1,15 @@
 const Fastify = require('fastify')
 const versionRoute = require('./routes/version.js')
 const errorHandler = require('./utils/errorHandler.js');
+const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
 
 class FastifyWrapper {
   constructor() {
     this.app = Fastify({
       logger: true
     })
+    setLogRequestHook(this.app)
+    setLogReplyHook(this.app)
     this.app.setErrorHandler(errorHandler)
     this._addRoutes()
   }

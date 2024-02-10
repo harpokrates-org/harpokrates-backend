@@ -1,4 +1,5 @@
 const ServerError = require('../errors/serverErrors');
+const { logError } = require('./logger');
 
 /*
 Maneja los errores de Fastify, devolviendo una
@@ -13,4 +14,6 @@ module.exports = function (error, request, reply) {
       code: error.code,
       message: error.message
     })
+  
+  logError(error, request)
 }

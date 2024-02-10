@@ -1,6 +1,5 @@
 const Ajv = require('ajv')
 
-jest.mock('../package.json');
 const FastifyWrapper = require('../src/fastify')
 const schema = require('../src/schemas/version')
 const { version } = require('../package.json');
@@ -14,7 +13,6 @@ describe('Version tests', () => {
   test('GET /version route returns api version', async () => {
     app = new FastifyWrapper()
     const response = await app.inject('GET', '/version')
-
 
     expect(response.statusCode).toBe(200)
     const responseBody = JSON.parse(response.payload)
