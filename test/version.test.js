@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
