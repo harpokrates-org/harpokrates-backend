@@ -9,9 +9,7 @@ COPY . .
 # RENDER=true
 # RENDER_REACT_APP_FLICKR_API_KEY='xxxxxx' es la API de Flickr
 ARG RENDER
-
-# Variables de entorno para npm run build
-ENV NPM_BUILD_ENV=""
+ARG RENDER_FLICKR_API_KEY
 
 # If you are building your code for production
 # RUN npm ci --only=production
@@ -23,5 +21,7 @@ RUN if [[ -z "$RENDER" ]]; then \
   apk add nano; \
   apk add git; \
   fi; 
+
+ENV FLICKR_API_KEY=RENDER_FLICKR_API_KEY
 
 CMD ["node", "src/server.js"] 

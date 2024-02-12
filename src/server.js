@@ -20,3 +20,4 @@ async function start() {
 }
 
 start()
+console.log(`FLICKR API KEY: ${process.env.FLICKR_API_KEY}`)
