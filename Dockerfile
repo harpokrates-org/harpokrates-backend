@@ -22,6 +22,6 @@ RUN if [[ -z "$RENDER" ]]; then \
   apk add git; \
   fi; 
 
-ENV FLICKR_API_KEY=RENDER_FLICKR_API_KEY
+ENV FLICKR_API_KEY=$RENDER_FLICKR_API_KEY
 
 CMD ["node", "src/server.js"] 
