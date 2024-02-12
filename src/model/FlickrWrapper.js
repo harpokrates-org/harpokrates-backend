@@ -5,7 +5,7 @@ const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
 }
 const errors = {
-  USER_NOT_FOUND: 'User not found',
+  'User not found': UserNotFoundError,
 }
 
 class FlickrWrapper {
@@ -20,8 +20,8 @@ class FlickrWrapper {
       logFlickrCall(flickrMethods.findUserByUsername, params, body)
       return body.user.id
     } catch(error){
-      if (error.message === errors.USER_NOT_FOUND)
-        throw new UserNotFoundError()
+      if (errors[error.message]) error = new errors[error.message]()
+      throw error
     }
   }
 }
