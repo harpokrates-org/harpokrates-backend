@@ -1,9 +1,16 @@
+const errorCodes = {
+  USER_NOT_FOUND: 'USER_NOT_FOUND_ERROR'
+}
+
 class UserNotFoundError extends Error {
   constructor() {
     super('User not found')
-    this.code = 'USER_NOT_FOUND_ERROR'
+    this.code = errorCodes.USER_NOT_FOUND
     this.statusCode = 404
   }
 }
 
-module.exports = UserNotFoundError
+module.exports = {
+  errorCodes,
+  UserNotFoundError,
+}

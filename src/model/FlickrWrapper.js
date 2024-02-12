@@ -1,5 +1,5 @@
 const { createFlickr } = require('flickr-sdk')
-const UserNotFoundError = require('../errors/FlickerWrapperErrors')
+const { UserNotFoundError } = require('../errors/FlickerWrapperErrors')
 const errors = {
   USER_NOT_FOUND: 'User not found',
 }
