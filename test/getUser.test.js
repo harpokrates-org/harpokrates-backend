@@ -2,23 +2,24 @@ require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
-const schema = require('../src/schemas/version')
-const { version } = require('../package.json');
+const schema = require('../src/schemas/getUser')
 
 const ajv = new Ajv()
 const validateSuccess = ajv.compile(schema.response[200])
 
-describe('Version tests', () => {
+describe('Get User tests', () => {
   let app
 
-  test('GET /version route returns api version', async () => {
+  test('GET /user route returns users id', async () => {
     app = new FastifyWrapper()
-    const response = await app.inject('GET', '/version')
+    const username = 'eugefranx'
+    const id = '197864017@N02'
+    const response = await app.inject('GET', `/user?username=${username}`)
 
     expect(response.statusCode).toBe(200)
     const responseBody = JSON.parse(response.payload)
     expect(validateSuccess(responseBody)).toBeTruthy()
-    expect(responseBody.version).toBe(version)
+    expect(responseBody.id).toBe(id)
   })
 
   afterAll(async () => {

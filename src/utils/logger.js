@@ -5,7 +5,7 @@ const logTypes = {
 }
 
 function setLogRequestHook(fastify) {
-  fastify.decorate('logRequest', async (request, reply) => {
+  fastify.decorate('logRequest', async (request) => {
     const log = generalLog(request, logTypes.REQUEST)
     console.info(log)
   })
