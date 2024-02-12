@@ -1,4 +1,8 @@
 const { createFlickr } = require('flickr-sdk')
+const UserNotFoundError = require('../errors/FlickerWrapperErrors')
+const errors = {
+  USER_NOT_FOUND: 'User not found',
+}
 
 class FlickrWrapper {
   constructor(){
@@ -6,8 +10,13 @@ class FlickrWrapper {
   }
 
   async getUser(username) {
-    const body = await this.caller('flickr.people.findByUsername', { username })
-    return body.user.id
+    try{
+      const body = await this.caller('flickr.people.findByUsername', { username })
+      return body.user.id
+    } catch(error){
+      if (error.message === errors.USER_NOT_FOUND)
+        throw new UserNotFoundError()
+    }
   }
 }
 

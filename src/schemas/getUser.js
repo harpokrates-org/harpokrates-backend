@@ -18,6 +18,30 @@ const schema = {
           type: 'string',
         }
       },
+    },
+    404: {
+      description: 'User not found',
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        message: {
+          type: 'string',
+        }
+      },
+    },
+    500: {
+      description: 'Server error',
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        message: {
+          type: 'string',
+        }
+      },
     }
   }
 }
