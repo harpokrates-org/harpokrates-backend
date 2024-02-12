@@ -1,5 +1,6 @@
 const Fastify = require('fastify')
 const versionRoute = require('./routes/version.js')
+const getUserRoute = require('./routes/getUser.js')
 const errorHandler = require('./utils/errorHandler.js');
 const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
 
@@ -40,6 +41,7 @@ class FastifyWrapper {
   */
   _addRoutes() {
     this.app.register(versionRoute)
+    this.app.register(getUserRoute)
   }
 }
 
