@@ -1,11 +1,8 @@
 {
   "name": "harpokrates-backend",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
-  "env": {
-    "VERSION": "0.2.0"
-  },
   "scripts": {
     "start": "node ./src/server",
     "eslint": "npx eslint .",
@@ -22,6 +19,7 @@
   },
   "homepage": "https://github.com/harpokrates-org/harpokrates-backend#readme",
   "dependencies": {
+    "@fastify/cors": "^9.0.1",
     "@types/jest": "^29.5.12",
     "dotenv": "^16.4.1",
     "fastify": "^4.26.0",
