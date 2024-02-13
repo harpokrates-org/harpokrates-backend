@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log(`API KEY: ${process.env.FLICKR_API_KEY}`)
 const FastifyWrapper = require('./fastify.js');
 
 /*
