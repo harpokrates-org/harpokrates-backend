@@ -15,13 +15,17 @@ ARG RENDER_FLICKR_API_KEY
 # RUN npm ci --only=production
 RUN npm install
 
+# Variables de entorno
+ENV ENVVARS=""
+
 # Paquetes para desarrollo con vscode
 # Solo se instalan localmente, no en render
 RUN if [[ -z "$RENDER" ]]; then \
-  apk add nano; \
-  apk add git; \
+    apk add nano; \
+    apk add git; \
+  else \ 
+    # Si estamos en render.com, seteamos la env variables en un string \
+    ENVVARS="FLICKR_API_KEY=${RENDER_FLICKR_API_KEY}"; \ 
   fi; 
 
-ENV FLICKR_API_KEY=$RENDER_FLICKR_API_KEY
-
-CMD ["node", "src/server.js"] 
+CMD $ENVVARS node src/server.js 
