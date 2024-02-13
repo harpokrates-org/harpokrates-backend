@@ -40,6 +40,7 @@ class FastifyWrapper {
   Registra las rutas en el servidor de Fastify.
   */
   _addRoutes() {
+    this.app.register(require('@fastify/cors'), { origin: true });
     this.app.register(versionRoute)
     this.app.register(getUserRoute)
   }
