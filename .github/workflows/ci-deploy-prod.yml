@@ -1,0 +1,15 @@
+name: Development workflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to cloud
+        run: curl ${{ secrets.RENDER_DEPLOY_PROD_URL }}
+
+        

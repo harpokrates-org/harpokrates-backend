@@ -1,8 +1,10 @@
-name: Development workflow staging
+name: Development workflow
 
 on:
   push:
-    branches: [staging]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   deploy:
@@ -18,7 +20,5 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - name: Deploy to cloud
-        run: curl ${{ secrets.RENDER_DEPLOY_STAGING_URL }}
 
         
