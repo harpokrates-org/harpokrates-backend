@@ -1,6 +1,7 @@
 const errorCodes = {
   USER_NOT_FOUND: 'USER_NOT_FOUND_ERROR',
-  UNKNOWN_USER: 'UNKNOWN_USER'
+  UNKNOWN_USER: 'UNKNOWN_USER',
+  PHOTO_NOT_FOUND: 'PHOTO_NOT_FOUND_ERROR',
 }
 
 class UserNotFoundError extends Error {
@@ -19,8 +20,17 @@ class UnknownUserError extends Error {
   }
 }
 
+class PhotoNotFoundError extends Error {
+  constructor() {
+    super('Photo not found')
+    this.code = errorCodes.PHOTO_NOT_FOUND
+    this.statusCode = 404
+  }
+}
+
 module.exports = {
   errorCodes,
   UserNotFoundError,
-  UnknownUserError
+  UnknownUserError,
+  PhotoNotFoundError
 }
