@@ -26,8 +26,9 @@ class FlickrWrapper {
       logFlickrCall(flickrMethods.findUserByUsername, params, body)
       return body.user.id
     } catch(error){
-      if (errors[error.message]) throw new errors[error.message]()
-      throw error
+      let errorToThrow = error
+      if (errors[error.message]) errorToThrow = new errors[error.message]()
+      throw errorToThrow
     }
   }
 
