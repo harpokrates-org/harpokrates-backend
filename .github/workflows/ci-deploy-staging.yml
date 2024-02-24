@@ -1,0 +1,15 @@
+name: Development workflow staging
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to cloud
+        run: curl ${{ secrets.RENDER_DEPLOY_STAGING_URL }}
+
+        

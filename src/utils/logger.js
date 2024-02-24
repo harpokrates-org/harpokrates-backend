@@ -1,11 +1,12 @@
 const logTypes = {
   REQUEST: 'REQUEST',
   REPLY: 'REPLY',
-  ERROR: 'ERROR'
+  ERROR: 'ERROR',
+  FLICKR: 'FLICKR_API',
 }
 
 function setLogRequestHook(fastify) {
-  fastify.decorate('logRequest', async (request, reply) => {
+  fastify.decorate('logRequest', async (request) => {
     const log = generalLog(request, logTypes.REQUEST)
     console.info(log)
   })
@@ -34,6 +35,16 @@ function logError(error, request) {
   })
 }
 
+function logFlickrCall(method, params, response) {
+  console.info({
+    type: logTypes.FLICKR,
+    time: new Date(),
+    method,
+    params,
+    response
+  })
+}
+
 function generalLog(request, type) {
   return {
     type,
@@ -50,5 +61,6 @@ function generalLog(request, type) {
 module.exports = {
   setLogRequestHook,
   setLogReplyHook,
-  logError
+  logError,
+  logFlickrCall,
 }
