@@ -2,7 +2,8 @@ var Mutex = require('async-mutex').Mutex;
 const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
 const { logFlickrCall } = require('../utils/logger')
-const PROFUNDIDAD_GRAFO = 2
+const GRAPH_DEAPTH = 2
+const PHOTOS_PER_USER_FOR_GRAPH = 1
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
   getPhotos: 'flickr.people.getPhotos',
@@ -65,7 +66,7 @@ class FlickrWrapper {
     }
   }
 
-  async getUsersWhoHaveFavorited(mainUsername, photoIDs, profundidad = PROFUNDIDAD_GRAFO, mutex = new Mutex(),
+  async getUsersWhoHaveFavorited(mainUsername, photoIDs, profundidad = GRAPH_DEAPTH, mutex = new Mutex(),
     nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
@@ -106,9 +107,7 @@ class FlickrWrapper {
           release()
   
           try {
-            const userId = await this.getUser(user.username)
-            const userPhotos = await this.getPhotos(userId, 1)
-            const userPhotoIDs = userPhotos.map(photo => photo.id)
+            const userPhotoIDs = await this._getPhotoIds(user.username, PHOTOS_PER_USER_FOR_GRAPH)
             return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, profundidad, mutex, nodes, edges, queue)
           } catch (error) { return }
         } else {
@@ -118,6 +117,12 @@ class FlickrWrapper {
 
       return await Promise.all(otherProm)
     } catch (error) { return }
+  }
+
+  async _getPhotoIds(username, q){
+    const userId = await this.getUser(username)
+    const userPhotos = await this.getPhotos(userId, q)
+    return userPhotos.map(photo => photo.id)
   }
 }
 
