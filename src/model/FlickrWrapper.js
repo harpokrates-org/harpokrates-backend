@@ -75,7 +75,7 @@ class FlickrWrapper {
 
       let promises = []
       for (const photoID of photoIDs) {
-        promises.push(this.getFavoritesInPhoto(nextUsername, photoID, profundidad - 1, mutex, nodes, edges, queue))
+        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, profundidad - 1, mutex, nodes, edges, queue))
       }
 
       await Promise.all(promises)
@@ -92,7 +92,7 @@ class FlickrWrapper {
   como resultado un grafo de profundidad máxima "profundidad".
   Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
   */
-  async getFavoritesInPhoto(username, photoID, profundidad, mutex, nodes, edges, queue) {
+  async _getFavoritesInPhoto(username, photoID, profundidad, mutex, nodes, edges, queue) {
     try {
       const params = { photo_id: photoID }
       const body = await this.caller(flickrMethods.getFavorites, params)
@@ -119,7 +119,6 @@ class FlickrWrapper {
       return await Promise.all(otherProm)
     } catch (error) { return }
   }
-      
 }
 
 module.exports = new FlickrWrapper()
