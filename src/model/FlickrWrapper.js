@@ -66,7 +66,7 @@ class FlickrWrapper {
   }
 
   async getUsersWhoHaveFavorited(mainUsername, photoIDs, profundidad = PROFUNDIDAD_GRAFO, mutex = new Mutex(),
-  nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
+    nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
       if (profundidad === 0 || queue.length === 0) return release()
