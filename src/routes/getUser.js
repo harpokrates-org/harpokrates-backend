@@ -3,7 +3,7 @@ const FlickrWrapper = require('../model/FlickrWrapper')
 
 /*
 Declaración de la ruta /user.
-Devuelve...
+Devuelve el id de un usuario de flickr a partir de su username
 */
 module.exports = function (fastify, opts, next) {
   fastify.get('/user', {
