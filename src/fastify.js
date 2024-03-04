@@ -6,6 +6,7 @@ const getSizesRoute = require('./routes/getSizes.js')
 const getFavoritesRoute = require('./routes/getFavorites.js')
 const errorHandler = require('./utils/errorHandler.js');
 const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
+const getUserPhotos = require('./routes/getUserPhotos.js')
 
 class FastifyWrapper {
   constructor() {
@@ -49,6 +50,7 @@ class FastifyWrapper {
     this.app.register(getPhotosRoute)
     this.app.register(getSizesRoute)
     this.app.register(getFavoritesRoute)
+    this.app.register(getUserPhotos)
   }
 }
 
