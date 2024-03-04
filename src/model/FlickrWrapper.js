@@ -124,6 +124,27 @@ class FlickrWrapper {
     const userPhotos = await this.getPhotos(userId, q)
     return userPhotos.map(photo => photo.id)
   }
+
+  async getUserPhotos(username, count) {
+    try{
+      const userId = await this.getUser(username);
+      const userPhotos = await this.getPhotos(userId, count)
+      const proms = userPhotos.map(async photo => {
+        const data = {
+          id: photo.id,
+          title: photo.title,
+          sizes: await this.getSizes(photo.id)
+        }
+        return data
+      })
+      const response = await Promise.all(proms);
+      return response;
+    } catch(error){
+      let errorToThrow = error
+      if (errors[error.message]) errorToThrow = new errors[error.message]()
+      throw errorToThrow
+    }
+  }
 }
 
 module.exports = new FlickrWrapper()
