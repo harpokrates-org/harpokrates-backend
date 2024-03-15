@@ -1,6 +1,6 @@
 {
   "name": "harpokrates-backend",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@types/jest": "^29.5.12",
+    "async-mutex": "^0.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "fastify": "^4.26.0",
