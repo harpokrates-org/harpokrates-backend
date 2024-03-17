@@ -24,7 +24,11 @@ class DataBase {
   }
 
   async userExists(email) {
-    return (await this.userModel.findOne({ email })) !== null
+    return await this.userModel.exists({ email })
+  }
+
+  async deleteUser(email) {
+    return await this.userModel.deleteOne({ email })
   }
 
   close() {
