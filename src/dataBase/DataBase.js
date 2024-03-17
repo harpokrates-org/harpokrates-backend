@@ -23,6 +23,10 @@ class DataBase {
     return savedUser;
   }
 
+  async userExists(email) {
+    return (await this.userModel.findOne({ email })) !== null
+  }
+
   close() {
     mongoose.disconnect()
   }
