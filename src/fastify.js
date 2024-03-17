@@ -1,5 +1,6 @@
 const Fastify = require('fastify')
 const versionRoute = require('./routes/version.js')
+const registerRoute = require('./routes/register.js')
 const getUserRoute = require('./routes/getUser.js')
 const getPhotosRoute = require('./routes/getPhotos.js')
 const getSizesRoute = require('./routes/getSizes.js')
@@ -33,10 +34,11 @@ class FastifyWrapper {
     this.app.close() 
   }
 
-  async inject(method, url) {
+  async inject(method, url, body) {
     return await this.app.inject({
       method,
-      url
+      url,
+      body
     })
   }
 
@@ -46,6 +48,7 @@ class FastifyWrapper {
   _addRoutes() {
     this.app.register(require('@fastify/cors'), { origin: true });
     this.app.register(versionRoute)
+    this.app.register(registerRoute)
     this.app.register(getUserRoute)
     this.app.register(getPhotosRoute)
     this.app.register(getSizesRoute)

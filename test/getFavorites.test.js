@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Ajv = require('ajv')
+const DataBase = require('../src/dataBase/DataBase')
 
 const FastifyWrapper = require('../src/fastify')
 const schema = require('../src/schemas/getFavorites')
@@ -12,7 +13,7 @@ describe('Get Favorites tests', () => {
 
   test('GET /favorites route returns nodes and edges of a graph', async () => {
     app = new FastifyWrapper()
-    const photo_ids = ['["51298709139","51250875038","51204137576"]' ] // eslint-disable-line
+    const photo_ids = ['["51298709139","51250875038"]' ] // eslint-disable-line
     const username = 'shutterbug_uk2012'
     const response = await app.inject('GET', `/favorites?photo_ids=${photo_ids}&username=${username}`)
 
@@ -24,5 +25,6 @@ describe('Get Favorites tests', () => {
 
   afterAll(async () => {
     app.close()
+    DataBase.close()
   })
 })
