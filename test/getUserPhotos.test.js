@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Ajv = require('ajv')
+const DataBase = require('../src/dataBase/DataBase')
 
 const FastifyWrapper = require('../src/fastify')
 const schema = require('../src/schemas/getUserPhotos')
@@ -45,5 +46,6 @@ describe('Get Photos tests', () => {
 
   afterAll(async () => {
     app.close()
+    DataBase.close()
   })
 })
