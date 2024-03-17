@@ -1,11 +1,12 @@
-const DataBase = require('../dataBase/DataBase')
+const User = require('./User')
 
 
 class UserManager {
   constructor(){}
 
   async register(email) {
-    const user = DataBase.addUser(email)
+    const user = new User(email)
+    await user.register()
     return user
   }
 
