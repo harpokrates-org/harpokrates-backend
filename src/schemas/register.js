@@ -1,13 +1,15 @@
 const schema = {
   summary: 'Register User',
-  querystring: {
+  body: {
     type: 'object',
     properties: {
       email: {
         type: 'string',
-        description: 'The user\'s email'
+        description: 'The user\'s email',
+        format: 'email'
       }
-    }
+    },
+    required: ['email']
   },
   response: {
     201: {
@@ -15,6 +17,18 @@ const schema = {
       type: 'object',
       properties: {
         email: {
+          type: 'string',
+        }
+      },
+    },
+    400: {
+      description: 'Bad request',
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        message: {
           type: 'string',
         }
       },
