@@ -28,9 +28,43 @@ describe('Register tests', () => {
     expect(responseBody.email).toBe(email)
   })
 
-  test('POST /register route with invalid email returns ERROR', async () => {
+  test('POST /register route with invalid email (no @) returns ERROR', async () => {
     app = new FastifyWrapper()
-    const email = ''
+    const email = 'doemail.com'
+    const response = await app.inject(
+      'POST',
+      '/register',
+      { email }
+    )
+
+    expect(response.statusCode).toBe(400)
+    const responseBody = JSON.parse(response.payload)
+    expect(validateBadRequest(responseBody)).toBeTruthy()
+    expect(responseBody.code).toBe(fastifyValidationCode)
+    expect(responseBody.message.includes('format')).toBeTruthy()
+    expect(responseBody.message.includes('email')).toBeTruthy()
+  })
+
+  test('POST /register route with invalid email (no .*) returns ERROR', async () => {
+    app = new FastifyWrapper()
+    const email = 'doe@mail'
+    const response = await app.inject(
+      'POST',
+      '/register',
+      { email }
+    )
+
+    expect(response.statusCode).toBe(400)
+    const responseBody = JSON.parse(response.payload)
+    expect(validateBadRequest(responseBody)).toBeTruthy()
+    expect(responseBody.code).toBe(fastifyValidationCode)
+    expect(responseBody.message.includes('format')).toBeTruthy()
+    expect(responseBody.message.includes('email')).toBeTruthy()
+  })
+
+  test('POST /register route with no  email returns ERROR', async () => {
+    app = new FastifyWrapper()
+    const email = 'doe@mail'
     const response = await app.inject(
       'POST',
       '/register',
