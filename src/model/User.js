@@ -10,6 +10,10 @@ class User {
     await DataBase.addUser(this.email)
   }
 
+  async exists() {
+    return await DataBase.userExists(this.email)
+  }
+
 }
 
 module.exports = User

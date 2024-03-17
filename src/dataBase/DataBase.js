@@ -23,6 +23,14 @@ class DataBase {
     return savedUser;
   }
 
+  async userExists(email) {
+    return await this.userModel.exists({ email })
+  }
+
+  async deleteUser(email) {
+    return await this.userModel.deleteOne({ email })
+  }
+
   close() {
     mongoose.disconnect()
   }

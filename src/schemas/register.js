@@ -33,6 +33,18 @@ const schema = {
         }
       },
     },
+    409: {
+      description: 'Conflict',
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+        },
+        message: {
+          type: 'string',
+        }
+      },
+    },
   }
 }
 
