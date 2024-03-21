@@ -2,8 +2,9 @@ const schema = require('../schemas/getUserPhotos');
 const FlickrWrapper = require('../model/FlickrWrapper')
 
 /*
-Declaración de la ruta /user.
-Devuelve el id de un usuario de flickr a partir de su username
+Declaración de la ruta /user/:username/photos.
+Dado el nombre de un usuario
+Devuelve una lista de imagenes y sus respectivos tamaños.
 */
 module.exports = function (fastify, opts, next) {
   fastify.get('/user/:username/photos', {
