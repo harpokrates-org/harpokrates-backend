@@ -1,6 +1,6 @@
 const errorCodes = {
   EMAIL_ALREADY_EXISTS: 'EMAIL_ALREADY_EXISTS',
-  EMAIL_DOES_NOT_EXIST: 'EMAIL_DOES_NOT_EXIST',
+  USER_DOESNT_EXIST: 'USER_DOESNT_EXIST',
 }
 
 class UserAlreadyExistsError extends Error {
@@ -14,7 +14,7 @@ class UserAlreadyExistsError extends Error {
 class UserDoesNotExistError extends Error {
   constructor() {
     super('The mail is not registed')
-    this.code = errorCodes.EMAIL_DOES_NOT_EXIST
+    this.code = errorCodes.USER_DOESNT_EXIST
     this.statusCode = 401
   }
 }
