@@ -1,5 +1,5 @@
 const User = require('./User')
-const { UserAlreadyExistsError } = require('../errors/UserManagerErrors')
+const { UserAlreadyExistsError, UserDoesNotExistError } = require('../errors/UserManagerErrors')
 
 
 class UserManager {
@@ -12,6 +12,11 @@ class UserManager {
     return user
   }
 
+  async login(email) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    return user
+  }
 }
 
 module.exports = new UserManager()

@@ -2,8 +2,8 @@ const schema = require('../schemas/getPhotos');
 const FlickrWrapper = require('../model/FlickrWrapper')
 
 /*
-Declaración de la ruta /user.
-Devuelve...
+Declaración de la ruta /photos.
+Devuelve una lista de imagenes de un usuario
 */
 module.exports = function (fastify, opts, next) {
   fastify.get('/photos', {
