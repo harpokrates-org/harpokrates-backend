@@ -43,7 +43,7 @@ describe('Register tests', () => {
     expect(response.statusCode).toBe(401)
     const responseBody = JSON.parse(response.payload)
     expect(validateSuccess(responseBody)).toBeTruthy()
-    expect(responseBody.code).toBe(errorCodes.EMAIL_DOES_NOT_EXIST)
+    expect(responseBody.code).toBe(errorCodes.USER_DOESNT_EXIST)
 
   })
 
