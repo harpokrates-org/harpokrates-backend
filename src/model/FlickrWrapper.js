@@ -100,9 +100,9 @@ class FlickrWrapper {
       logFlickrCall(flickrMethods.getFavorites, params, body)
       const otherProm = body.photo.person.map(async user => {
         const release = await mutex.acquire()
+        edges.add([user.username, username])
         if (!nodes.has(user.username)) {
           nodes.add(user.username)
-          edges.add([user.username, username])
           queue.push(user.username)
           release()
   
