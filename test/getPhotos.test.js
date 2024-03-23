@@ -21,7 +21,7 @@ describe('Get User Photos tests', () => {
     const per_page = 3
 
     jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
-      return successMock(user_id)
+      return successMock(user_id, per_page)
     })
 
     const response = await app.inject('GET', `/photos?user_id=${user_id}&per_page=${per_page}`)

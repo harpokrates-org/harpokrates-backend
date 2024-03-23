@@ -1,48 +1,36 @@
-const successMock = (id) => {
-  return {
+const successMock = (id, count) => {
+  const photosBase = {
     photos: {
       page: 1,
       pages: 17,
       perpage: 3,
       total: 50,
-      photo: [
-        {
-          id: '53526923995',
-          owner: id,
-          secret: 'cdc04156f8',
-          server: '65535',
-          farm: 66,
-          title: 'North Caucasus',
-          ispublic: 1,
-          isfriend: 0,
-          isfamily: 0
-        },
-        {
-          id: '53517261997',
-          owner: id,
-          secret: '43305b9e8f',
-          server: '65535',
-          farm: 66,
-          title: 'View of Elbrus',
-          ispublic: 1,
-          isfriend: 0,
-          isfamily: 0
-        },
-        {
-          id: '53492541823',
-          owner: id,
-          secret: '03316de04f',
-          server: '65535',
-          farm: 66,
-          title: 'On the way to Djily-Su',
-          ispublic: 1,
-          isfriend: 0,
-          isfamily: 0
-        },
-      ]
+      photo: []
     },
     stat: 'ok'
   }
+  const titles = ['North Caucasus', 'View of Elbrus', 'On the way to Djily-Su']
+  const photoBase = {
+    id: 53526923995,
+    owner: id,
+    secret: 'cdc04156f8',
+    server: '65535',
+    farm: 66,
+    title: 'North Caucasus',
+    ispublic: 1,
+    isfriend: 0,
+    isfamily: 0
+  }
+  
+  for (let i = 0; i < count; i++) {
+    photosBase.photos.photo.push({
+      ...photoBase,
+      title: titles[i%3] + ' ' + i,
+      id: (photoBase.id + i).toString()
+    })
+  }
+
+  return photosBase
 }
 
 const unknownUserMock = () => {
