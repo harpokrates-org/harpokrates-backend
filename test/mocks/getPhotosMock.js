@@ -2,9 +2,9 @@ const successMock = (id) => {
   return {
     photos: {
       page: 1,
-      pages: 5,
-      perpage: 100,
-      total: 451,
+      pages: 17,
+      perpage: 3,
+      total: 50,
       photo: [
         {
           id: '53526923995',

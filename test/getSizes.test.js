@@ -1,10 +1,12 @@
 require('dotenv').config();
 const Ajv = require('ajv')
-const DataBase = require('../src/dataBase/DataBase')
 
 const FastifyWrapper = require('../src/fastify')
+const FlickrWrapper = require('../src/model/FlickrWrapper')
 const schema = require('../src/schemas/getUser')
+const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
+const { successMock, photoNotFoundMock } = require('./mocks/getSizesMock');
 
 const ajv = new Ajv()
 const validateSuccess = ajv.compile(schema.response[200])
@@ -16,6 +18,11 @@ describe('Get User Photos Sizes tests', () => {
   test('GET /sizes route returns users photos sizes', async () => {
     app = new FastifyWrapper()
     const photo_id = '53526923995'
+
+    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+      return successMock()
+    })
+
     const response = await app.inject('GET', `/sizes?photo_id=${photo_id}`)
 
     expect(response.statusCode).toBe(200)
@@ -31,6 +38,11 @@ describe('Get User Photos Sizes tests', () => {
   test('GET /sizes route with a non existent photo_id returns ERROR', async () => {
     app = new FastifyWrapper()
     const photo_id = 'ThisPhotoIdDoesntExist'
+
+    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+      return photoNotFoundMock()
+    })
+
     const response = await app.inject('GET', `/sizes?photo_id=${photo_id}`)
 
     expect(response.statusCode).toBe(404)
@@ -42,5 +54,6 @@ describe('Get User Photos Sizes tests', () => {
   afterAll(async () => {
     app.close()
     DataBase.close()
+    jest.restoreAllMocks();
   })
 })
