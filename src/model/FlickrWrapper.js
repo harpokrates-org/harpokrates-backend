@@ -3,7 +3,7 @@ const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
 const { logFlickrCall } = require('../utils/logger')
 const GRAPH_DEAPTH = 2
-const PHOTOS_PER_USER_FOR_GRAPH = 1
+
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
   getPhotos: 'flickr.people.getPhotos',
@@ -66,7 +66,7 @@ class FlickrWrapper {
     }
   }
 
-  async getUsersWhoHaveFavorited(mainUsername, photoIDs, profundidad = GRAPH_DEAPTH, mutex = new Mutex(),
+  async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, profundidad = GRAPH_DEAPTH, mutex = new Mutex(),
     nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
@@ -76,7 +76,7 @@ class FlickrWrapper {
 
       let promises = []
       for (const photoID of photoIDs) {
-        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, profundidad - 1, mutex, nodes, edges, queue))
+        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, profundidad - 1, mutex, nodes, edges, queue))
       }
 
       await Promise.all(promises)
@@ -93,7 +93,7 @@ class FlickrWrapper {
   como resultado un grafo de profundidad máxima "profundidad".
   Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
   */
-  async _getFavoritesInPhoto(username, photoID, profundidad, mutex, nodes, edges, queue) {
+  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, profundidad, mutex, nodes, edges, queue) {
     try {
       const params = { photo_id: photoID }
       const body = await this.caller(flickrMethods.getFavorites, params)
@@ -107,8 +107,8 @@ class FlickrWrapper {
           release()
   
           try {
-            const userPhotoIDs = await this._getPhotoIds(user.username, PHOTOS_PER_USER_FOR_GRAPH)
-            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, profundidad, mutex, nodes, edges, queue)
+            const userPhotoIDs = await this._getPhotoIds(user.username, photosPerFavorite)
+            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, profundidad, mutex, nodes, edges, queue)
           } catch (error) { return }
         } else {
           release()

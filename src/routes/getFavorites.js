@@ -15,7 +15,11 @@ module.exports = function (fastify, opts, next) {
     schema,
   }, async function (request, reply) {
     const photoIDs = JSON.parse(request.query.photo_ids)
-    const favorited = await FlickrWrapper.getUsersWhoHaveFavorited(request.query.username, photoIDs)
+    const favorited = await FlickrWrapper.getUsersWhoHaveFavorited(
+      request.query.username,
+      photoIDs,
+      request.query.photos_per_favorite
+    )
     reply
       .type('application/json')
       .code(200)
