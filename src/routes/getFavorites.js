@@ -18,7 +18,8 @@ module.exports = function (fastify, opts, next) {
     const favorited = await FlickrWrapper.getUsersWhoHaveFavorited(
       request.query.username,
       photoIDs,
-      request.query.photos_per_favorite
+      request.query.photos_per_favorite,
+      request.query.depth,
     )
     reply
       .type('application/json')
