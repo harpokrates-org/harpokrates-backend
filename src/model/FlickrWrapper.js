@@ -147,4 +147,7 @@ class FlickrWrapper {
   }
 }
 
-module.exports = new FlickrWrapper()
+module.exports = {
+  flickrMethods: flickrMethods,
+  flickrWrapperInstance: new FlickrWrapper()
+}

@@ -2,7 +2,7 @@ require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
-const FlickrWrapper = require('../src/model/FlickrWrapper')
+const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWrapper')
 const schema = require('../src/schemas/getUserPhotos')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
