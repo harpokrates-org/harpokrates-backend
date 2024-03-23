@@ -1,5 +1,5 @@
 const schema = require('../schemas/getSizes');
-const FlickrWrapper = require('../model/FlickrWrapper')
+const { flickrWrapperInstance: FlickrWrapper } = require('../model/FlickrWrapper')
 
 /*
 Declaración de la ruta /user.

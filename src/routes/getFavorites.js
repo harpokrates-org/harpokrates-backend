@@ -1,5 +1,5 @@
 const schema = require('../schemas/getFavorites');
-const FlickrWrapper = require('../model/FlickrWrapper')
+const { flickrWrapperInstance: FlickrWrapper } = require('../model/FlickrWrapper')
 
 /*
 Declaración de la ruta /favorites.
