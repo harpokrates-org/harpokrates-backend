@@ -269,14 +269,7 @@ const successMock = (callNumber) => {
   return askljfd
 }
 
-const notFoundMock = () => {
-  throw {
-    message: 'User not found'
-  }
-}
-
 module.exports = {
   successMock,
-  notFoundMock,
 }
 
