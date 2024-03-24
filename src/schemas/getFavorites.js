@@ -13,11 +13,13 @@ const schema = {
       },
       photos_per_favorite: {
         type: 'number',
-        description: 'The number of photos of the person who gave a favorite, to analize'
+        description: 'The number of photos of the person who gave a favorite, to analize',
+        maximum: 5,
       },
       depth: {
         type: 'number',
-        description: 'The max depth of the search in the network'
+        description: 'The max depth of the search in the network',
+        maximum: 3,
       },
     }
   },
