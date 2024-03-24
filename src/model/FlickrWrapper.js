@@ -66,17 +66,17 @@ class FlickrWrapper {
     }
   }
 
-  async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, profundidad = GRAPH_DEAPTH, mutex = new Mutex(),
+  async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH, mutex = new Mutex(),
     nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
-      if (profundidad === 0 || queue.length === 0) return release()
+      if (depth === 0 || queue.length === 0) return release()
       const nextUsername = queue.shift()
       release()
 
       let promises = []
       for (const photoID of photoIDs) {
-        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, profundidad - 1, mutex, nodes, edges, queue))
+        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, depth - 1, mutex, nodes, edges, queue))
       }
 
       await Promise.all(promises)
@@ -93,7 +93,7 @@ class FlickrWrapper {
   como resultado un grafo de profundidad máxima "profundidad".
   Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
   */
-  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, profundidad, mutex, nodes, edges, queue) {
+  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue) {
     try {
       const params = { photo_id: photoID }
       const body = await this.caller(flickrMethods.getFavorites, params)
@@ -108,7 +108,7 @@ class FlickrWrapper {
   
           try {
             const userPhotoIDs = await this._getPhotoIds(user.username, photosPerFavorite)
-            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, profundidad, mutex, nodes, edges, queue)
+            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
           } catch (error) { return }
         } else {
           release()

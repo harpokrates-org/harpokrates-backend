@@ -15,6 +15,10 @@ const schema = {
         type: 'number',
         description: 'The number of photos of the person who gave a favorite, to analize'
       },
+      depth: {
+        type: 'number',
+        description: 'The max depth of the search in the network'
+      },
     }
   },
   response: {
