@@ -3,7 +3,7 @@ const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
 const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWrapper')
-const schema = require('../src/schemas/getUser')
+const schema = require('../src/schemas/getUserProfile')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
 const { successMock, noPhotoMock, notFoundMock } = require('./mocks/getUserProfileMock');
