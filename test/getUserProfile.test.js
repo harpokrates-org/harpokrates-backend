@@ -32,7 +32,7 @@ describe('Get User Profile tests', () => {
     expect(responseBody.realname).toBe(mock.person.realname._content)
     expect(responseBody.description).toBe(mock.person.description._content)
     expect(responseBody.photo)
-      .toBe(`http://farm${mock.person.iconfarm}.staticflickr.com/${mock.person.iconserver}/buddyicons/${mock.person.nsid}.jpg`)
+      .toBe(`https://farm${mock.person.iconfarm}.staticflickr.com/${mock.person.iconserver}/buddyicons/${mock.person.nsid}.jpg`)
   })
 
   test('GET /user/profile route when user has no profile picture', async () => {
