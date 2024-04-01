@@ -42,11 +42,12 @@ class FlickrWrapper {
       const body = await this.caller(flickrMethods.getUserProfile, params)
       logFlickrCall(flickrMethods.getUserProfile, params, body)
       const { nsid, iconfarm, iconserver } = body.person
+      const photo = iconfarm !== 0 ? `http://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg` : null
       return {
         username: body.person.username._content,
         realname: body.person.realname._content,
         description: body.person.description._content,
-        photo: `http://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg`,
+        photo,
       }
     } catch(error){
       let errorToThrow = error
