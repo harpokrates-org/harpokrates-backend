@@ -9,6 +9,7 @@ const flickrMethods = {
   getPhotos: 'flickr.people.getPhotos',
   getSizes: 'flickr.photos.getSizes',
   getFavorites: 'flickr.photos.getFavorites',
+  getUserProfile: 'flickr.people.getInfo',
 }
 
 const errors = {
@@ -28,6 +29,25 @@ class FlickrWrapper {
       const body = await this.caller(flickrMethods.findUserByUsername, params)
       logFlickrCall(flickrMethods.findUserByUsername, params, body)
       return body.user.id
+    } catch(error){
+      let errorToThrow = error
+      if (errors[error.message]) errorToThrow = new errors[error.message]()
+      throw errorToThrow
+    }
+  }
+
+  async getUserProfile(userID) {
+    try{
+      const params = { user_id: userID }
+      const body = await this.caller(flickrMethods.getUserProfile, params)
+      logFlickrCall(flickrMethods.getUserProfile, params, body)
+      const { nsid, iconfarm, iconserver } = body.person
+      return {
+        username: body.person.username._content,
+        realname: body.person.realname._content,
+        description: body.person.description._content,
+        photo: `http://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg`,
+      }
     } catch(error){
       let errorToThrow = error
       if (errors[error.message]) errorToThrow = new errors[error.message]()
