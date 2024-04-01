@@ -9,12 +9,12 @@ const ajv = new Ajv()
 const validateSuccess = ajv.compile(schema.response[200])
 const { errorCodes } = require('../src/errors/UserManagerErrors');
 
-describe('Register tests', () => {
+describe('Login tests', () => {
   let app
 
   test('POST /login route logs in the user if already exists', async () => {
     app = new FastifyWrapper()
-    const email = 'doe@mail.com'
+    const email = 'otroDoe@mail.com'
     await DataBase.addUser(email)
 
     const response = await app.inject(

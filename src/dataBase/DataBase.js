@@ -7,7 +7,13 @@ class DataBase {
     mongoose.connect(process.env.MONGO_URL)
         
     mongoose.connection.on('connected', ()=> {
-      console.info('[Mongoose] - connected in:', process.env.MONGO_URL)
+      let MONGO_URL = ''
+      if (process.env.NODE_ENV == 'test') {
+        MONGO_URL = process.env.MONGO_URL_TEST
+      } else {
+        MONGO_URL = process.env.MONGO_URL
+      }
+      console.info('[Mongoose] - connected in:', MONGO_URL)
     })
         
     mongoose.connection.on('error', (err)=> {
