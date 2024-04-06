@@ -91,7 +91,10 @@ class FlickrWrapper {
     nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
-      if (depth === 0 || queue.length === 0) return release()
+      if (depth === 0 || queue.length === 0) {
+        release()
+        return { nodes: [ ...nodes ], edges: [] }
+      }
       const nextUsername = queue.shift()
       release()
 

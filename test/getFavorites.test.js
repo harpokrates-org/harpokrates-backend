@@ -41,6 +41,23 @@ describe('Get Favorites tests', () => {
     expect(responseBody.nodes.includes(username)).toBeTruthy()
   })
 
+  test('GET /favorites route with depth = 0', async () => {
+    app = new FastifyWrapper()
+    const photo_ids = ['["51298709139","51250875038"]' ] // eslint-disable-line
+    const username = 'shutterbug_uk2012'
+    let depth = 0
+
+    const response = await app.inject('GET', 
+      `/favorites?photo_ids=${photo_ids}&username=${username}&depth=${depth}`
+    )
+
+    expect(response.statusCode).toBe(200)
+    const responseBody = JSON.parse(response.payload)
+    expect(validateSuccess(responseBody)).toBeTruthy()
+    expect(responseBody.nodes.includes(username)).toBeTruthy()
+    expect(responseBody.edges).toEqual([])
+  })
+
   afterAll(async () => {
     app.close()
     DataBase.close()
