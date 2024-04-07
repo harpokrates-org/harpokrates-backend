@@ -45,7 +45,7 @@ class FlickrWrapper {
       const photo = iconfarm !== 0 ? `https://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg` : null
       return {
         username: body.person.username._content,
-        realname: body.person.realname._content,
+        realname: body.person.realname ? body.person.realname._content : body.person.username._content,
         description: body.person.description._content,
         photo,
       }
