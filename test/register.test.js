@@ -18,10 +18,12 @@ describe('Register tests', () => {
   test('POST /register route registers a new user and returns added user', async () => {
     app = new FastifyWrapper()
     const email = 'doe@mail.com'
+    const name = 'philip'
+    const surname = 'fry'
     const response = await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
 
     expect(response.statusCode).toBe(201)
@@ -36,10 +38,12 @@ describe('Register tests', () => {
   test('POST /register route with invalid email (no @) returns ERROR', async () => {
     app = new FastifyWrapper()
     const email = 'doemail.com'
+    const name = 'philip'
+    const surname = 'fry'
     const response = await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
 
     expect(response.statusCode).toBe(400)
@@ -53,10 +57,12 @@ describe('Register tests', () => {
   test('POST /register route with invalid email (no .*) returns ERROR', async () => {
     app = new FastifyWrapper()
     const email = 'doe@mail'
+    const name = 'philip'
+    const surname = 'fry'
     const response = await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
 
     expect(response.statusCode).toBe(400)
@@ -70,10 +76,12 @@ describe('Register tests', () => {
   test('POST /register route with no  email returns ERROR', async () => {
     app = new FastifyWrapper()
     const email = 'doe@mail'
+    const name = 'philip'
+    const surname = 'fry'
     const response = await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
 
     expect(response.statusCode).toBe(400)
@@ -108,15 +116,17 @@ describe('Register tests', () => {
   test('POST /register route verifies unique email', async () => {
     app = new FastifyWrapper()
     const email = 'doe2@mail.com'
+    const name = 'philip'
+    const surname = 'fry'
     await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
     const response = await app.inject(
       'POST',
       '/register',
-      { email }
+      { email, name, surname }
     )
 
     expect(response.statusCode).toBe(409)
@@ -127,4 +137,40 @@ describe('Register tests', () => {
 
     await DataBase.deleteUser(email)
   })
+
+  test('POST /register route returns error if there is no name', async () => {
+    app = new FastifyWrapper()
+    const email = 'doe-no-name@mail.com'
+    const surname = 'fry'
+    const response = await app.inject(
+      'POST',
+      '/register',
+      { email,  surname }
+    )
+
+    expect(response.statusCode).toBe(400)
+    const responseBody = JSON.parse(response.payload)
+    expect(validateBadRequest(responseBody)).toBeTruthy()
+    expect(responseBody.code).toBe(fastifyValidationCode)
+    expect(responseBody.message.includes('required')).toBeTruthy()
+    expect(responseBody.message.includes('name')).toBeTruthy()
+  })
+
+  test('POST /register route returns error if there is no surname', async () => {
+    app = new FastifyWrapper()
+    const email = 'doe-no-name@mail.com'
+    const name = 'philip'
+    const response = await app.inject(
+      'POST',
+      '/register',
+      { email,  name }
+    )
+
+    expect(response.statusCode).toBe(400)
+    const responseBody = JSON.parse(response.payload)
+    expect(validateBadRequest(responseBody)).toBeTruthy()
+    expect(responseBody.code).toBe(fastifyValidationCode)
+    expect(responseBody.message.includes('required')).toBeTruthy()
+    expect(responseBody.message.includes('surname')).toBeTruthy()
+  })  
 })

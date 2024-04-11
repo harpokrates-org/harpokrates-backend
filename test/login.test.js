@@ -15,7 +15,9 @@ describe('Login tests', () => {
   test('POST /login route logs in the user if already exists', async () => {
     app = new FastifyWrapper()
     const email = 'otroDoe@mail.com'
-    await DataBase.addUser(email)
+    const name = 'philip'
+    const surname = 'fry'
+    await DataBase.addUser(email, name, surname)
 
     const response = await app.inject(
       'POST',

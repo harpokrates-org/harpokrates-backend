@@ -11,7 +11,11 @@ module.exports = function (fastify, opts, next) {
     onSend: [fastify.logReply],
     schema,
   }, async function (request, reply) {
-    const user = await UserManager.register(request.body.email)
+    const user = await UserManager.register(
+      request.body.email,
+      request.body.name,
+      request.body.surname
+    )
     reply
       .type('application/json')
       .code(201)
