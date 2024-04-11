@@ -7,9 +7,17 @@ const schema = {
         type: 'string',
         description: 'The user\'s email',
         format: 'email'
+      },
+      name: {
+        type: 'string',
+        description: 'The user\'s name',
+      },
+      surname: {
+        type: 'string',
+        description: 'The user\'s surname',
       }
     },
-    required: ['email']
+    required: ['email', 'name', 'surname']
   },
   response: {
     201: {

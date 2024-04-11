@@ -23,8 +23,8 @@ class DataBase {
     this.userModel = userModel;
   }
 
-  async addUser(email) {
-    const user = new this.userModel({ email });
+  async addUser(email, name, surname) {
+    const user = new this.userModel({ email, name, surname });
     const savedUser = await user.save();
     return savedUser;
   }

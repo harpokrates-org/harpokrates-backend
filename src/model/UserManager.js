@@ -5,8 +5,8 @@ const { UserAlreadyExistsError, UserDoesNotExistError } = require('../errors/Use
 class UserManager {
   constructor(){}
 
-  async register(email) {
-    const user = new User(email)
+  async register(email, name, surname) {
+    const user = new User(email, name, surname)
     if (await user.exists()) throw new UserAlreadyExistsError
     await user.register()
     return user

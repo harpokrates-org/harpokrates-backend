@@ -1,4 +1,7 @@
 commit:
 	npx git-cz 
 
-.PHONY: commit
+server:
+	node src/server.js
+
+.PHONY: commit server
