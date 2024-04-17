@@ -10,7 +10,17 @@ const schema = {
       photo_ids: {
         type: 'array',
         description: 'The Flickr user\'s photos ids'
-      }
+      },
+      photos_per_favorite: {
+        type: 'number',
+        description: 'The number of photos of the person who gave a favorite, to analize',
+        maximum: 5,
+      },
+      depth: {
+        type: 'number',
+        description: 'The max depth of the search in the network',
+        maximum: 3,
+      },
     }
   },
   response: {

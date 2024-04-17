@@ -3,12 +3,13 @@ const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
 const { logFlickrCall } = require('../utils/logger')
 const GRAPH_DEAPTH = 2
-const PHOTOS_PER_USER_FOR_GRAPH = 1
+
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
   getPhotos: 'flickr.people.getPhotos',
   getSizes: 'flickr.photos.getSizes',
   getFavorites: 'flickr.photos.getFavorites',
+  getUserProfile: 'flickr.people.getInfo',
 }
 
 const errors = {
@@ -28,6 +29,26 @@ class FlickrWrapper {
       const body = await this.caller(flickrMethods.findUserByUsername, params)
       logFlickrCall(flickrMethods.findUserByUsername, params, body)
       return body.user.id
+    } catch(error){
+      let errorToThrow = error
+      if (errors[error.message]) errorToThrow = new errors[error.message]()
+      throw errorToThrow
+    }
+  }
+
+  async getUserProfile(userID) {
+    try{
+      const params = { user_id: userID }
+      const body = await this.caller(flickrMethods.getUserProfile, params)
+      logFlickrCall(flickrMethods.getUserProfile, params, body)
+      const { nsid, iconfarm, iconserver } = body.person
+      const photo = iconfarm !== 0 ? `https://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg` : null
+      return {
+        username: body.person.username._content,
+        realname: body.person.realname ? body.person.realname._content : body.person.username._content,
+        description: body.person.description._content,
+        photo,
+      }
     } catch(error){
       let errorToThrow = error
       if (errors[error.message]) errorToThrow = new errors[error.message]()
@@ -66,17 +87,20 @@ class FlickrWrapper {
     }
   }
 
-  async getUsersWhoHaveFavorited(mainUsername, photoIDs, profundidad = GRAPH_DEAPTH, mutex = new Mutex(),
+  async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH, mutex = new Mutex(),
     nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
     try{
       const release = await mutex.acquire()
-      if (profundidad === 0 || queue.length === 0) return release()
+      if (depth === 0 || queue.length === 0) {
+        release()
+        return { nodes: [ ...nodes ], edges: [] }
+      }
       const nextUsername = queue.shift()
       release()
 
       let promises = []
       for (const photoID of photoIDs) {
-        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, profundidad - 1, mutex, nodes, edges, queue))
+        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, depth - 1, mutex, nodes, edges, queue))
       }
 
       await Promise.all(promises)
@@ -93,22 +117,22 @@ class FlickrWrapper {
   como resultado un grafo de profundidad máxima "profundidad".
   Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
   */
-  async _getFavoritesInPhoto(username, photoID, profundidad, mutex, nodes, edges, queue) {
+  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue) {
     try {
       const params = { photo_id: photoID }
       const body = await this.caller(flickrMethods.getFavorites, params)
       logFlickrCall(flickrMethods.getFavorites, params, body)
       const otherProm = body.photo.person.map(async user => {
         const release = await mutex.acquire()
+        edges.add([user.username, username])
         if (!nodes.has(user.username)) {
           nodes.add(user.username)
-          edges.add([user.username, username])
           queue.push(user.username)
           release()
   
           try {
-            const userPhotoIDs = await this._getPhotoIds(user.username, PHOTOS_PER_USER_FOR_GRAPH)
-            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, profundidad, mutex, nodes, edges, queue)
+            const userPhotoIDs = await this._getPhotoIds(user.username, photosPerFavorite)
+            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
           } catch (error) { return }
         } else {
           release()
@@ -147,4 +171,7 @@ class FlickrWrapper {
   }
 }
 
-module.exports = new FlickrWrapper()
+module.exports = {
+  flickrMethods: flickrMethods,
+  flickrWrapperInstance: new FlickrWrapper()
+}

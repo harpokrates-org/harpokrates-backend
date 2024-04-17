@@ -1,5 +1,5 @@
 const schema = require('../schemas/getFavorites');
-const FlickrWrapper = require('../model/FlickrWrapper')
+const { flickrWrapperInstance: FlickrWrapper } = require('../model/FlickrWrapper')
 
 /*
 Declaración de la ruta /favorites.
@@ -15,7 +15,12 @@ module.exports = function (fastify, opts, next) {
     schema,
   }, async function (request, reply) {
     const photoIDs = JSON.parse(request.query.photo_ids)
-    const favorited = await FlickrWrapper.getUsersWhoHaveFavorited(request.query.username, photoIDs)
+    const favorited = await FlickrWrapper.getUsersWhoHaveFavorited(
+      request.query.username,
+      photoIDs,
+      request.query.photos_per_favorite,
+      request.query.depth,
+    )
     reply
       .type('application/json')
       .code(200)

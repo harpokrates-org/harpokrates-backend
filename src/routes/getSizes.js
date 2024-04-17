@@ -1,9 +1,10 @@
 const schema = require('../schemas/getSizes');
-const FlickrWrapper = require('../model/FlickrWrapper')
+const { flickrWrapperInstance: FlickrWrapper } = require('../model/FlickrWrapper')
 
 /*
 Declaración de la ruta /user.
-Devuelve...
+Devuelve los distintos tamaños asociados a una imagen
+ej: Small, medium, large 
 */
 module.exports = function (fastify, opts, next) {
   fastify.get('/sizes', {
