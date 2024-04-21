@@ -2,6 +2,7 @@ var Mutex = require('async-mutex').Mutex;
 const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
 const { logFlickrCall } = require('../utils/logger')
+const util = require('util')
 const GRAPH_DEAPTH = 2
 
 const flickrMethods = {
@@ -134,7 +135,7 @@ class FlickrWrapper {
             const userPhotoIDs = await this._getPhotoIds(user.username, photosPerFavorite)
             return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
           } catch (error) { 
-            console.log(error)
+            console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
             return 
           }
         } else {
