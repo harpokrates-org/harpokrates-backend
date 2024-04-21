@@ -133,7 +133,10 @@ class FlickrWrapper {
           try {
             const userPhotoIDs = await this._getPhotoIds(user.username, photosPerFavorite)
             return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
-          } catch (error) { return }
+          } catch (error) { 
+            console.log(error)
+            return 
+          }
         } else {
           release()
         }
