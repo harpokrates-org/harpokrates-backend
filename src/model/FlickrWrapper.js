@@ -6,7 +6,7 @@ const util = require('util')
 const retry = require('async-await-retry');
 
 const GRAPH_DEAPTH = 2
-const RETRY_FACTOR = process.env.NODE_ENV === "production" ? 20 : 10;
+const RETRY_FACTOR = process.env.NODE_ENV === "production" ? 100 : 10;
 
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
