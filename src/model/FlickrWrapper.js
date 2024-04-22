@@ -4,7 +4,9 @@ const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../
 const { logFlickrCall } = require('../utils/logger')
 const util = require('util')
 const retry = require('async-await-retry');
+
 const GRAPH_DEAPTH = 2
+const RETRY_FACTOR = process.env.NODE_ENV === "production" ? 20 : 10;
 
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
@@ -135,7 +137,7 @@ class FlickrWrapper {
           try {
             const userPhotoIDs = await retry(async () => {
               return await this._getPhotoIds(user.username, photosPerFavorite);
-            }, null, {retriesMax: 4, interval: 100, exponential: true, factor: 3, jitter: 100});
+            }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
             return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
           } catch (error) { 
             console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
