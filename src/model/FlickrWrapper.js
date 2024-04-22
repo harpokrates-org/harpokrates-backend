@@ -135,7 +135,7 @@ class FlickrWrapper {
           try {
             const userPhotoIDs = await retry(async () => {
               return await this._getPhotoIds(user.username, photosPerFavorite);
-            });
+            }, null, {retriesMax: 4, interval: 100, exponential: true, factor: 3, jitter: 100});
             return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
           } catch (error) { 
             console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
