@@ -28,4 +28,5 @@ RUN if [[ -z "$RENDER" ]]; then \
     ENVVARS="FLICKR_API_KEY=${RENDER_FLICKR_API_KEY}"; \ 
   fi; 
 
-CMD $ENVVARS NODE_ENV="production" node src/server.js 
+ENV NODE_ENV "production"
+CMD $ENVVARS node src/server.js 
