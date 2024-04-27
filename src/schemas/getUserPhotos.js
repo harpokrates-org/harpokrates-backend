@@ -10,7 +10,15 @@ const schema = {
       count: {
         type: 'string',
         description: 'The numbers of photos to be retrieved'
-      }
+      },
+      min_date: {
+        type: 'string',
+        description: 'The minimum date of the photos to be fetched. Format: unix timestamp'
+      },
+      max_date: {
+        type: 'string',
+        description: 'The maximum date of the photos to be fetched. Format: unix timestamp'
+      },
     }
   },
   response: {

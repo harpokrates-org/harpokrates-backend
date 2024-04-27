@@ -14,7 +14,9 @@ module.exports = function (fastify, opts, next) {
   }, async function (request, reply) {
     const data = await FlickrWrapper.getUserPhotos(
       request.params.username, 
-      request.query.count
+      request.query.count,
+      request.query.min_date,
+      request.query.max_date
     )
     reply
       .type('application/json')

@@ -60,9 +60,14 @@ class FlickrWrapper {
     }
   }
 
-  async getPhotos(userID, perPage=100) {
+  async getPhotos(userID, perPage=100, minDate, maxDate) {
     try{
-      const params = { user_id: userID, per_page: perPage }
+      const params = { 
+        user_id: userID,
+        per_page: perPage, 
+        min_upload_date: minDate, 
+        max_upload_date: maxDate
+      }
       const body = await this.caller(flickrMethods.getPhotos, params)
       logFlickrCall(flickrMethods.getPhotos, params, body)
       const photos = body.photos.photo.map(p => ({ id: p.id, title: p.title }))
@@ -158,10 +163,10 @@ class FlickrWrapper {
     return userPhotos.map(photo => photo.id)
   }
 
-  async getUserPhotos(username, count) {
+  async getUserPhotos(username, count, minDate, maxDate) {
     try{
       const userId = await this.getUser(username);
-      const userPhotos = await this.getPhotos(userId, count)
+      const userPhotos = await this.getPhotos(userId, count, minDate, maxDate)
       const proms = userPhotos.map(async photo => {
         const data = {
           id: photo.id,
