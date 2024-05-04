@@ -7,6 +7,7 @@ const retry = require('async-await-retry');
 
 const GRAPH_DEAPTH = 2
 const RETRY_FACTOR = process.env.NODE_ENV === 'production' ? 10 : 3;
+const MILISECS_IN_SEC = 1000
 
 const flickrMethods = {
   findUserByUsername: 'flickr.people.findByUsername',
@@ -65,8 +66,8 @@ class FlickrWrapper {
       const params = { 
         user_id: userID,
         per_page: perPage, 
-        min_upload_date: minDate, 
-        max_upload_date: maxDate
+        min_upload_date: minDate / MILISECS_IN_SEC, 
+        max_upload_date: maxDate / MILISECS_IN_SEC
       }
       const body = await this.caller(flickrMethods.getPhotos, params)
       logFlickrCall(flickrMethods.getPhotos, params, body)
