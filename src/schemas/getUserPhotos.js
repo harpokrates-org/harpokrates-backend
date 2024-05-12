@@ -1,12 +1,17 @@
 const schema = {
   summary: 'Get Flickr Users Photos',
+  params: {
+    type: 'object',
+    properties: {
+      user_id: {
+        type: 'string',
+        description: 'The Flickr user\'s id'
+      },
+    }
+  },
   querystring: {
     type: 'object',
     properties: {
-      username: {
-        type: 'string',
-        description: 'The Flickr user\'s username'
-      },
       count: {
         type: 'string',
         description: 'The numbers of photos to be retrieved'

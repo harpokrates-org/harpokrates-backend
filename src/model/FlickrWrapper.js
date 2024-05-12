@@ -164,10 +164,9 @@ class FlickrWrapper {
     return userPhotos.map(photo => photo.id)
   }
 
-  async getUserPhotos(username, count, minDate, maxDate) {
+  async getUserPhotos(userID, count, minDate, maxDate) {
     try{
-      const userId = await this.getUser(username);
-      const userPhotos = await this.getPhotos(userId, count, minDate, maxDate)
+      const userPhotos = await this.getPhotos(userID, count, minDate, maxDate)
       const proms = userPhotos.map(async photo => {
         const data = {
           id: photo.id,

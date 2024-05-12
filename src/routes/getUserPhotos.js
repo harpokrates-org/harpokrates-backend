@@ -7,13 +7,13 @@ Dado el nombre de un usuario
 Devuelve una lista de imagenes y sus respectivos tamaños.
 */
 module.exports = function (fastify, opts, next) {
-  fastify.get('/user/:username/photos', {
+  fastify.get('/user/:user_id/photos', {
     preHandler: [fastify.logRequest],
     onSend: [fastify.logReply],
     schema,
   }, async function (request, reply) {
     const data = await FlickrWrapper.getUserPhotos(
-      request.params.username, 
+      request.params.user_id, 
       request.query.count,
       request.query.min_date,
       request.query.max_date
