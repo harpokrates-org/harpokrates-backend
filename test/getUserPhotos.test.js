@@ -6,8 +6,7 @@ const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWra
 const schema = require('../src/schemas/getUserPhotos')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
-const { successMock: getUserSuccessMock, notFoundMock } = require('./mocks/getUserMock');
-const { successMock: getPhotosSuccessMock } = require('./mocks/getPhotosMock');
+const { successMock: getPhotosSuccessMock, unknownUserMock } = require('./mocks/getPhotosMock');
 const { successMock: getSizesSuccessMock } = require('./mocks/getSizesMock');
 
 const ajv = new Ajv()
@@ -49,7 +48,7 @@ describe('Get Photos tests', () => {
     const count = 12;
 
     jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
-      return notFoundMock()
+      return unknownUserMock()
     })
 
     const response = await app.inject('GET', `/user/${userId}/photos?count=${count}`)
@@ -57,7 +56,7 @@ describe('Get Photos tests', () => {
     expect(response.statusCode).toBe(404)
     const responseBody = JSON.parse(response.payload)
     expect(validateUserNotFound(responseBody)).toBeTruthy()
-    expect(responseBody.code).toBe(errorCodes.USER_NOT_FOUND)
+    expect(responseBody.code).toBe(errorCodes.UNKNOWN_USER)
   })
 
   afterAll(async () => {
