@@ -6,8 +6,7 @@ const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWra
 const schema = require('../src/schemas/getUserPhotos')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
-const { successMock: getUserSuccessMock, notFoundMock } = require('./mocks/getUserMock');
-const { successMock: getPhotosSuccessMock } = require('./mocks/getPhotosMock');
+const { successMock: getPhotosSuccessMock, unknownUserMock } = require('./mocks/getPhotosMock');
 const { successMock: getSizesSuccessMock } = require('./mocks/getSizesMock');
 
 const ajv = new Ajv()
@@ -17,21 +16,18 @@ const validateUserNotFound = ajv.compile(schema.response[404])
 describe('Get Photos tests', () => {
   let app
 
-  test('GET /user/:username/photos?count=<count> route returns user photos', async () => {
+  test('GET /user/:user_id/photos?count=<count> route returns user photos', async () => {
     app = new FastifyWrapper()
-    const username = 'matthias416'
-    const id = '184374196@N07'
+    const userId = '184374196@N07'
     const count = 12;
 
     jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
-      return getUserSuccessMock(id)
-    }).mockImplementationOnce(() => {
-      return getPhotosSuccessMock(id, count)
+      return getPhotosSuccessMock(userId, count)
     }).mockImplementation(() => {
       return getSizesSuccessMock()
     })
 
-    const response = await app.inject('GET', `/user/${username}/photos?count=${count}`)
+    const response = await app.inject('GET', `/user/${userId}/photos?count=${count}`)
 
     expect(response.statusCode).toBe(200)
     const responseBody = JSON.parse(response.payload)
@@ -46,21 +42,21 @@ describe('Get Photos tests', () => {
     expect(responseBody.photos[0].sizes[0].height).not.toBe('')
   })
 
-  test('GET /user/:username/photos?count=<count> route with a non existent username returns ERROR', async () => {
+  test('GET /user/:user_id/photos?count=<count> route with a non existent username returns ERROR', async () => {
     app = new FastifyWrapper()
-    const username = 'ThisUsernameDoesntExists'
+    const userId = 'doesnotexist@N00'
     const count = 12;
 
     jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
-      return notFoundMock()
+      return unknownUserMock()
     })
 
-    const response = await app.inject('GET', `/user/${username}/photos?count=${count}`)
+    const response = await app.inject('GET', `/user/${userId}/photos?count=${count}`)
 
     expect(response.statusCode).toBe(404)
     const responseBody = JSON.parse(response.payload)
     expect(validateUserNotFound(responseBody)).toBeTruthy()
-    expect(responseBody.code).toBe(errorCodes.USER_NOT_FOUND)
+    expect(responseBody.code).toBe(errorCodes.UNKNOWN_USER)
   })
 
   afterAll(async () => {
