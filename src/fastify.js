@@ -5,7 +5,6 @@ const loginRoute = require('./routes/login.js')
 const getUserRoute = require('./routes/getUser.js')
 const getUserProfileRoute = require('./routes/getUserProfile.js')
 const getPhotosRoute = require('./routes/getPhotos.js')
-const getSizesRoute = require('./routes/getSizes.js')
 const getFavoritesRoute = require('./routes/getFavorites.js')
 const errorHandler = require('./utils/errorHandler.js');
 const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
@@ -54,7 +53,6 @@ class FastifyWrapper {
     this.app.register(getUserRoute)
     this.app.register(getUserProfileRoute)
     this.app.register(getPhotosRoute)
-    this.app.register(getSizesRoute)
     this.app.register(getFavoritesRoute)
     this.app.register(getUserPhotos)
     this.app.register(loginRoute)
