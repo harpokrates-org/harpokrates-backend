@@ -130,7 +130,7 @@ class FlickrWrapper {
   async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore) {
     try {
       const params = { photo_id: photoID }
-      const [value, release] = await semaphore.acquire()
+      const [,release] = await semaphore.acquire()
       const body = await this.caller(flickrMethods.getFavorites, params)
       release()
       logFlickrCall(flickrMethods.getFavorites, params, body)
