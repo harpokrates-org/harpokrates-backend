@@ -25,6 +25,7 @@ jobs:
         env:
           FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
           MONGO_URL: ${{ secrets.MONGO_URL }}
+          FLICKR_CALLS_LIMIT: ${{ secrets.FLICKR_CALLS_LIMIT }}
       - run: npm test
 
 
