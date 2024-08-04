@@ -1,4 +1,4 @@
-var Mutex = require('async-mutex').Mutex;
+var { Semaphore, Mutex } = require('async-mutex');
 const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
 const { logFlickrCall } = require('../utils/logger')
@@ -98,7 +98,7 @@ class FlickrWrapper {
   }
 
   async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH, mutex = new Mutex(),
-    nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername]) {
+    nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername], semaphore = new Semaphore(process.env.FLICKR_CALLS_LIMIT)) {
     try{
       const release = await mutex.acquire()
       if (depth === 0 || queue.length === 0) {
@@ -110,7 +110,7 @@ class FlickrWrapper {
 
       let promises = []
       for (const photoID of photoIDs) {
-        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, depth - 1, mutex, nodes, edges, queue))
+        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, depth - 1, mutex, nodes, edges, queue, semaphore))
       }
 
       await Promise.all(promises)
@@ -127,10 +127,12 @@ class FlickrWrapper {
   como resultado un grafo de profundidad máxima "profundidad".
   Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
   */
-  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue) {
+  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore) {
     try {
       const params = { photo_id: photoID }
+      const [value, release] = await semaphore.acquire()
       const body = await this.caller(flickrMethods.getFavorites, params)
+      release()
       logFlickrCall(flickrMethods.getFavorites, params, body)
       const otherProm = body.photo.person.map(async user => {
         const release = await mutex.acquire()
@@ -144,7 +146,7 @@ class FlickrWrapper {
             const userPhotoIDs = await retry(async () => {
               return await this._getPhotoIds(user.username, photosPerFavorite);
             }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
-            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue)
+            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore)
           } catch (error) { 
             console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
             return 
