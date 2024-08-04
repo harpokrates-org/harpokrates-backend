@@ -130,7 +130,6 @@ class FlickrWrapper {
   async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore) {
     try {
       const params = { photo_id: photoID }
-      // eslint-disable-next-line no-unused-vars
       const [,release] = await semaphore.acquire()
       const body = await this.caller(flickrMethods.getFavorites, params)
       release()
