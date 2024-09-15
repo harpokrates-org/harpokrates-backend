@@ -17,6 +17,12 @@ class UserManager {
     if (! await user.exists()) throw new UserDoesNotExistError
     return user
   }
+
+  async setPreferencies(email, preferencies) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    return user.setPreferencies(preferencies)
+  }
 }
 
 module.exports = new UserManager()

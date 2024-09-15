@@ -16,6 +16,10 @@ class User {
     return await DataBase.userExists(this.email)
   }
 
+  async setPreferencies(preferencies) {
+    return await DataBase.setPreferencies(this.email, preferencies.model)
+  }
+
 }
 
 module.exports = User
