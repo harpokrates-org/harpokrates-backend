@@ -38,10 +38,16 @@ class DataBase {
   }
 
   async setPreferencies(email, model) {
+    const user = await this.userModel.findOneAndUpdate({ email },
+                                                      { $set: { preferencies: { model } } },
+                                                      { new: true })
+    return { model: user.preferencies.model }
+  }
+
+  async getPreferencies(email) {
     const user = await this.userModel.findOne({ email })
-    user.preferencies = { model }
-    user.save()
-    return user.preferencies
+    if (!user.preferencies.model) return {}
+    return { model: user.preferencies.model }
   }
 
   close() {

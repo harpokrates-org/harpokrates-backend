@@ -15,7 +15,7 @@ class UserManager {
   async login(email) {
     const user = new User(email)
     if (! await user.exists()) throw new UserDoesNotExistError
-    return user
+    return user.getPreferencies()
   }
 
   async setPreferencies(email, preferencies) {
