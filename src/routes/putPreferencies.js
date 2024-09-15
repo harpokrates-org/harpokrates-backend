@@ -1,5 +1,4 @@
 const schema = require('../schemas/putPreferencies');
-const { flickrWrapperInstance: FlickrWrapper } = require('../model/FlickrWrapper');
 const UserManager = require('../model/UserManager');
 
 /*
