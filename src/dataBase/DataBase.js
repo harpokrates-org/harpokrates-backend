@@ -1,6 +1,5 @@
 const { default: mongoose } = require('mongoose');
 const userModel = require('./models/User.js');
-const preferenciesModel = require('./models/Preferencies.js');
 
 class DataBase {
     
@@ -22,7 +21,6 @@ class DataBase {
     })
 
     this.userModel = userModel;
-    this.preferenciesModel = preferenciesModel;
   }
 
   async addUser(email, name, surname) {
@@ -40,12 +38,16 @@ class DataBase {
   }
 
   async setPreferencies(email, model) {
+    const user = await this.userModel.findOneAndUpdate({ email },
+      { $set: { preferencies: { model } } },
+      { new: true })
+    return { model: user.preferencies.model }
+  }
+
+  async getPreferencies(email) {
     const user = await this.userModel.findOne({ email })
-    const preferencies = new this.preferenciesModel({ model })
-    preferencies.save()
-    user.preferencies = preferencies
-    user.save()
-    return preferencies
+    if (!user.preferencies.model) return {}
+    return { model: user.preferencies.model }
   }
 
   close() {

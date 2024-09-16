@@ -14,8 +14,9 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   preferencies: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'preferencies'
+    model:{
+      type: String
+    }
   }
 });
 

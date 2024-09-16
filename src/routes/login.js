@@ -10,11 +10,12 @@ module.exports = function (fastify, opts, next) {
     onSend: [fastify.logReply],
     schema,
   }, async function (request, reply) {
-    await UserManager.login(request.body.email)
+    const preferencies = await UserManager.login(request.body.email)
+    const response = Object.keys(preferencies).length > 0 ? { preferencies } : {}
     reply
       .type('application/json')
       .code(200)
-      .send({})
+      .send(response)
   })
   next()
 }
