@@ -24,6 +24,9 @@ class User {
     return await DataBase.getPreferencies(this.email)
   }
 
+  async setModels(models) {
+    return await DataBase.setModels(this.email, models)
+  }
 }
 
 module.exports = User

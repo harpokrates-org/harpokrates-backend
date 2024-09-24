@@ -10,6 +10,7 @@ const errorHandler = require('./utils/errorHandler.js');
 const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
 const getUserPhotos = require('./routes/getUserPhotos.js')
 const putPreferencies = require('./routes/putPreferencies.js')
+const putModels = require('./routes/putModels.js')
 
 class FastifyWrapper {
   constructor() {
@@ -58,6 +59,7 @@ class FastifyWrapper {
     this.app.register(getUserPhotos)
     this.app.register(loginRoute)
     this.app.register(putPreferencies)
+    this.app.register(putModels)
   }
 }
 

@@ -50,6 +50,13 @@ class DataBase {
     return { model: user.preferencies.model }
   }
 
+  async setModels(email, models) {
+    const user = await this.userModel.findOneAndUpdate({ email },
+      { $set: { models: models } },
+      { new: true })
+    return { models: user.models }
+  }
+
   close() {
     mongoose.disconnect()
   }

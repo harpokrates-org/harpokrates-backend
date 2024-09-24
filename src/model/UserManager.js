@@ -23,6 +23,12 @@ class UserManager {
     if (! await user.exists()) throw new UserDoesNotExistError
     return user.setPreferencies(preferencies)
   }
+
+  async setModels(email, models) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    return user.setModels(models)
+  }
 }
 
 module.exports = new UserManager()

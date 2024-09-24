@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 
+const modelSchema = new mongoose.Schema({ name: String, url: String });
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -17,7 +19,8 @@ const userSchema = new mongoose.Schema({
     model:{
       type: String
     }
-  }
+  },
+  models: [modelSchema]
 });
 
 const userModel = mongoose.model('user', userSchema);
