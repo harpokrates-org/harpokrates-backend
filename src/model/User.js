@@ -25,6 +25,10 @@ class User {
     return await DataBase.getPreferencies(this.email)
   }
 
+  async hasModel(modelName) {
+    return await DataBase.userHasModel(this.email, modelName)
+  }
+
   async addModel(modelName, modelURL) {
     return await DataBase.addModel(this.email, modelName, modelURL)
   }

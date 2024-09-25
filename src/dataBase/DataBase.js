@@ -50,6 +50,10 @@ class DataBase {
     return { model: user.preferencies.model }
   }
 
+  async userHasModel(email, modelName) {
+    return await this.userModel.exists({ email: email, 'models.name': modelName })
+  }
+
   async addModel(email, modelName, modelURL) {
     const user = await this.userModel.findOneAndUpdate({ email },
       { $addToSet: { models: { name: modelName, url: modelURL } } },
