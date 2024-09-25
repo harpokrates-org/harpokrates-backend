@@ -61,6 +61,11 @@ class DataBase {
     return { models: user.models }
   }
 
+  async getModels(email) {
+    const user = await this.userModel.findOne({ email })
+    return user.models
+  }
+
   close() {
     mongoose.disconnect()
   }

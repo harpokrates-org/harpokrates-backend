@@ -6,7 +6,6 @@ class User {
     this.email = email
     this.name = name
     this.surname = surname
-    this.models = []
   }
 
   async register() {
@@ -31,6 +30,10 @@ class User {
 
   async addModel(modelName, modelURL) {
     return await DataBase.addModel(this.email, modelName, modelURL)
+  }
+
+  async getModels() {
+    return await DataBase.getModels(this.email)
   }
 }
 

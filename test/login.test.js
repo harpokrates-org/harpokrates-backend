@@ -8,13 +8,14 @@ const schema = require('../src/schemas/login');
 const ajv = new Ajv()
 const validateSuccess = ajv.compile(schema.response[200])
 const { errorCodes } = require('../src/errors/UserManagerErrors');
+const randomEmail = require('random-email');
 
 describe('Login tests', () => {
   let app
 
   test('POST /login route logs in the user if already exists, with no preferencies', async () => {
     app = new FastifyWrapper()
-    const email = 'otroDoe@mail.com'
+    const email = randomEmail()
     const name = 'philip'
     const surname = 'fry'
     await DataBase.addUser(email, name, surname)
@@ -35,7 +36,7 @@ describe('Login tests', () => {
 
   test('POST /login route logs in the user if already exists, with preferencies', async () => {
     app = new FastifyWrapper()
-    const email = 'otroDoe@mail.com'
+    const email = randomEmail()
     const name = 'philip'
     const surname = 'fry'
     const preferencies = { model: 'EffNetV2B0' }

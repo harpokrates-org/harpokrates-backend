@@ -30,6 +30,12 @@ class UserManager {
     if (await user.hasModel(modelName)) throw new ModelAlreadyExistsError
     return user.addModel(modelName, modelURL)
   }
+
+  async getModels(email) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    return user.getModels()
+  }
 }
 
 module.exports = new UserManager()

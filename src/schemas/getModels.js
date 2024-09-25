@@ -1,36 +1,29 @@
 const schema = {
-  summary: 'Set users models',
-  body: {
+  summary: 'Get users models',
+  querystring: {
     type: 'object',
     properties: {
       email: {
         type: 'string',
-        description: 'The user email',
-        format: 'email',
-      },
-      modelName: {
-        type: 'string',
-        description: 'The model name'
-      },
-      modelURL: {
-        type: 'string',
-        description: 'The model URL'
+        description: 'Harpokrates user email'
       }
-    },
-    required: ['email', 'modelName', 'modelURL'],
+    }
   },
   response: {
-    201: {
-      description: 'Created',
+    200: {
+      description: 'Success',
       type: 'object',
       properties: {
-        preferencies: {
-          type: 'object',
+        models: {
+          type: 'array',
           properties: {
-            modelName: {
+            _id: {
               type: 'string',
             },
-            modelURL: {
+            name: {
+              type: 'string',
+            },
+            url: {
               type: 'string',
             },
           },

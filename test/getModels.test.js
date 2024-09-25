@@ -3,46 +3,38 @@ const Ajv = require('ajv');
 const DataBase = require('../src/dataBase/DataBase');
 
 const FastifyWrapper = require('../src/fastify');
-const schema = require('../src/schemas/postModels');
+const schema = require('../src/schemas/getModels');
 
 const ajv = new Ajv();
-const validateSuccess = ajv.compile(schema.response[201]);
+const validateSuccess = ajv.compile(schema.response[200]);
 const validateUserDoesntExist = ajv.compile(schema.response[401]);
 const { errorCodes } = require('../src/errors/UserManagerErrors');
 const randomEmail = require('random-email');
 
-
-describe('Put models tests', () => {
+describe('GET models tests', () => {
   let app;
 
-  test('POST /models route adds models to existing user', async () => {
+  test('GET /models route. Getting models from new user returns empty list', async () => {
     app = new FastifyWrapper();
     const email = randomEmail()
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
 
-    const response = await app.inject('POST', '/models', {
-      email,
-      modelName: 'MobileNet-Stego',
-      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-    });
-    expect(response.statusCode).toBe(201);
+    const response = await app.inject('GET', `/models?email=${email}`);
+    expect(response.statusCode).toBe(200);
     const responseBody = JSON.parse(response.payload);
     expect(validateSuccess(responseBody)).toBeTruthy();
+    expect(responseBody.models.length).toBe(0)
 
     await DataBase.deleteUser(email);
   });
 
-  test('POST /models route returns error if user doesnt exist', async () => {
+  test('GET /models route returns error if user doesnt exist', async () => {
     app = new FastifyWrapper();
     const email = 'nonexistinguser@mail.com';
 
-    const response = await app.inject('POST', '/models', {
-      email,
-      modelName: 'MobileNet-Stego',
-      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-    });
+    const response = await app.inject('GET', `/models?email=${email}`);
 
     expect(response.statusCode).toBe(401);
     const responseBody = JSON.parse(response.payload);
@@ -50,26 +42,27 @@ describe('Put models tests', () => {
     expect(responseBody.code).toBe(errorCodes.USER_DOESNT_EXIST);
   });
 
-  test('POST /models route returns error if model already exists', async () => {
+  test('GET /models route. Getting models from user with one model returns a list of one item', async () => {
     app = new FastifyWrapper();
-    const email = randomEmail()
+    const email = 'otroDoe@mail.com';
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
-    const body = {
+
+    // Add one model
+    await app.inject('POST', '/models', {
       email,
-      modelName: 'EfficientNet',
-      modelURL: 'www.kaggle.com'
-    }
+      modelName: 'MobileNet-Stego',
+      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
+    });
 
-    // first time adding the model
-    await app.inject('POST', '/models', body);
-    // second time adding it
-    const response = await app.inject('POST', '/models', body);
-
+    const response = await app.inject('GET', `/models?email=${email}`);
+    expect(response.statusCode).toBe(200);
     const responseBody = JSON.parse(response.payload);
-    expect(responseBody.code).toBe(errorCodes.MODEL_ALREADY_EXISTS);
-    await DataBase.deleteUser(email)
+    expect(validateSuccess(responseBody)).toBeTruthy();
+    expect(responseBody.models.length).toBe(1)
+
+    await DataBase.deleteUser(email);
   });
 
   afterAll(async () => {

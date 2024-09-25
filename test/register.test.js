@@ -11,13 +11,14 @@ const validateSuccess = ajv.compile(schema.response[201])
 const validateBadRequest = ajv.compile(schema.response[400])
 const validateConflict = ajv.compile(schema.response[409])
 const fastifyValidationCode = 'FST_ERR_VALIDATION'
+const randomEmail = require('random-email');
 
 describe('Register tests', () => {
   let app
 
   test('POST /register route registers a new user and returns added user', async () => {
     app = new FastifyWrapper()
-    const email = 'doe@mail.com'
+    const email = randomEmail()
     const name = 'philip'
     const surname = 'fry'
     const response = await app.inject(
@@ -115,7 +116,7 @@ describe('Register tests', () => {
 
   test('POST /register route verifies unique email', async () => {
     app = new FastifyWrapper()
-    const email = 'doe2@mail.com'
+    const email = randomEmail()
     const name = 'philip'
     const surname = 'fry'
     await app.inject(
