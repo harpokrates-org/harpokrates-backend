@@ -3,7 +3,7 @@ const Ajv = require('ajv');
 const DataBase = require('../src/dataBase/DataBase');
 
 const FastifyWrapper = require('../src/fastify');
-const schema = require('../src/schemas/putModels');
+const schema = require('../src/schemas/postModels');
 
 const ajv = new Ajv();
 const validateSuccess = ajv.compile(schema.response[201]);
@@ -13,25 +13,17 @@ const { errorCodes } = require('../src/errors/UserManagerErrors');
 describe('Put models tests', () => {
   let app;
 
-  test('PUT /models route adds models to existing user', async () => {
+  test('POST /models route adds models to existing user', async () => {
     app = new FastifyWrapper();
     const email = 'otroDoe@mail.com';
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
 
-    const response = await app.inject('PUT', '/models', {
+    const response = await app.inject('POST', '/models', {
       email,
-      models: [
-        {
-          name: 'MobileNet-Stego',
-          url: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-        },
-        {
-          name: 'EfficientNet-Stego',
-          url: 'https://www.kaggle.com/models/user/efficientnet-stego/TfJs/default/1',
-        },
-      ],
+      modelName: 'MobileNet-Stego',
+      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
     });
 
     expect(response.statusCode).toBe(201);
@@ -41,22 +33,14 @@ describe('Put models tests', () => {
     await DataBase.deleteUser(email);
   });
 
-  test('PUT /models route returns error if user doesnt exist', async () => {
+  test('POST /models route returns error if user doesnt exist', async () => {
     app = new FastifyWrapper();
     const email = 'nonexistinguser@mail.com';
 
-    const response = await app.inject('PUT', '/models', {
+    const response = await app.inject('POST', '/models', {
       email,
-      models: [
-        {
-          name: 'MobileNet-Stego',
-          url: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-        },
-        {
-          name: 'EfficientNet-Stego',
-          url: 'https://www.kaggle.com/models/user/efficientnet-stego/TfJs/default/1',
-        },
-      ],
+      modelName: 'MobileNet-Stego',
+      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
     });
 
     expect(response.statusCode).toBe(401);

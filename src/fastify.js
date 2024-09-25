@@ -10,7 +10,7 @@ const errorHandler = require('./utils/errorHandler.js');
 const { setLogRequestHook, setLogReplyHook } = require('./utils/logger.js');
 const getUserPhotos = require('./routes/getUserPhotos.js')
 const putPreferencies = require('./routes/putPreferencies.js')
-const putModels = require('./routes/putModels.js')
+const putModels = require('./routes/postModels.js')
 
 class FastifyWrapper {
   constructor() {

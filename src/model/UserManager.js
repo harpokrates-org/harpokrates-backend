@@ -24,10 +24,10 @@ class UserManager {
     return user.setPreferencies(preferencies)
   }
 
-  async setModels(email, models) {
+  async addModel(email, modelName, modelURL) {
     const user = new User(email)
     if (! await user.exists()) throw new UserDoesNotExistError
-    return user.setModels(models)
+    return user.addModel(modelName, modelURL)
   }
 }
 

@@ -6,6 +6,7 @@ class User {
     this.email = email
     this.name = name
     this.surname = surname
+    this.models = []
   }
 
   async register() {
@@ -24,8 +25,8 @@ class User {
     return await DataBase.getPreferencies(this.email)
   }
 
-  async setModels(models) {
-    return await DataBase.setModels(this.email, models)
+  async addModel(modelName, modelURL) {
+    return await DataBase.addModel(this.email, modelName, modelURL)
   }
 }
 

@@ -8,21 +8,16 @@ const schema = {
         description: 'The user email',
         format: 'email',
       },
-      models: {
-        type: 'array',
-        description: 'The users models given by name and url',
-        properties: {
-          name: {
-            type: 'string',
-          },
-          url: {
-            type: 'string',
-          },
-        },
-        required: ['name', 'url'],
+      modelName: {
+        type: 'string',
+        description: 'The model name'
       },
+      modelURL: {
+        type: 'string',
+        description: 'The model URL'
+      }
     },
-    required: ['email', 'models'],
+    required: ['email', 'modelName', 'modelURL'],
   },
   response: {
     201: {

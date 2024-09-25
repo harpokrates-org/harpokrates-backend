@@ -50,9 +50,9 @@ class DataBase {
     return { model: user.preferencies.model }
   }
 
-  async setModels(email, models) {
+  async addModel(email, modelName, modelURL) {
     const user = await this.userModel.findOneAndUpdate({ email },
-      { $set: { models: models } },
+      { $addToSet: { models: { name: modelName, url: modelURL } } },
       { new: true })
     return { models: user.models }
   }
