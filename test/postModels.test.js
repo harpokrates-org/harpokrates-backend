@@ -17,7 +17,7 @@ describe('Put models tests', () => {
 
   test('POST /models route adds models to existing user', async () => {
     app = new FastifyWrapper();
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
@@ -52,7 +52,7 @@ describe('Put models tests', () => {
 
   test('POST /models route returns error if model already exists', async () => {
     app = new FastifyWrapper();
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);

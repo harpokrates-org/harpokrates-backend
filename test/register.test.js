@@ -18,7 +18,7 @@ describe('Register tests', () => {
 
   test('POST /register route registers a new user and returns added user', async () => {
     app = new FastifyWrapper()
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     const response = await app.inject(
@@ -116,7 +116,7 @@ describe('Register tests', () => {
 
   test('POST /register route verifies unique email', async () => {
     app = new FastifyWrapper()
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     await app.inject(

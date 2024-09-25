@@ -16,7 +16,7 @@ describe('Put Preferencies tests', () => {
 
   test('PUT /preferencies route adds preferencies to existing user', async () => {
     app = new FastifyWrapper()
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     await DataBase.addUser(email, name, surname)

@@ -16,7 +16,7 @@ describe('GET models tests', () => {
 
   test('GET /models route. Getting models from new user returns empty list', async () => {
     app = new FastifyWrapper();
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);

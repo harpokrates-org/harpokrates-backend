@@ -15,7 +15,7 @@ describe('Login tests', () => {
 
   test('POST /login route logs in the user if already exists, with no preferencies', async () => {
     app = new FastifyWrapper()
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     await DataBase.addUser(email, name, surname)
@@ -26,7 +26,10 @@ describe('Login tests', () => {
       { email }
     )
 
-    expect(response.statusCode).toBe(200)
+    //expect(response.statusCode).toBe(200)
+    if (response.statusCode != 200) {
+      expect(response).toBe(200)
+    }
     const responseBody = JSON.parse(response.payload)
     expect(validateSuccess(responseBody)).toBeTruthy()
     expect(responseBody).toStrictEqual({})
@@ -36,7 +39,7 @@ describe('Login tests', () => {
 
   test('POST /login route logs in the user if already exists, with preferencies', async () => {
     app = new FastifyWrapper()
-    const email = randomEmail()
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     const preferencies = { model: 'EffNetV2B0' }
