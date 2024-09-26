@@ -69,6 +69,10 @@ describe('GET models tests', () => {
     const responseBody = JSON.parse(response.payload);
     expect(validateSuccess(responseBody)).toBeTruthy();
     expect(responseBody.models.length).toBe(1)
+    expect(responseBody.models[0].name).toBe(modelName)
+    expect(responseBody.models[0].url).toBe(modelURL)
+    expect(responseBody.models[0].imageSize).toBe(modelImageSize)
+    expect(responseBody.models[0].threshold).toBe(modelThreshold)
 
     await DataBase.deleteUser(email);
   });
