@@ -1,5 +1,5 @@
 const User = require('./User')
-const { UserAlreadyExistsError, UserDoesNotExistError } = require('../errors/UserManagerErrors')
+const { UserAlreadyExistsError, UserDoesNotExistError, ModelAlreadyExistsError } = require('../errors/UserManagerErrors')
 
 
 class UserManager {
@@ -22,6 +22,19 @@ class UserManager {
     const user = new User(email)
     if (! await user.exists()) throw new UserDoesNotExistError
     return user.setPreferencies(preferencies)
+  }
+
+  async addModel(email, modelName, modelURL, modelImageSize, modelThreshold) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    if (await user.hasModel(modelName)) throw new ModelAlreadyExistsError
+    return user.addModel(modelName, modelURL, modelImageSize, modelThreshold)
+  }
+
+  async getModels(email) {
+    const user = new User(email)
+    if (! await user.exists()) throw new UserDoesNotExistError
+    return user.getModels()
   }
 }
 

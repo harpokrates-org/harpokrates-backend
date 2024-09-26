@@ -9,13 +9,14 @@ const ajv = new Ajv()
 const validateSuccess = ajv.compile(schema.response[201])
 const validateUserDoesntExist = ajv.compile(schema.response[401])
 const { errorCodes } = require('../src/errors/UserManagerErrors');
+const randomEmail = require('random-email');
 
 describe('Put Preferencies tests', () => {
   let app
 
   test('PUT /preferencies route adds preferencies to existing user', async () => {
     app = new FastifyWrapper()
-    const email = 'otroDoe@mail.com'
+    const email = randomEmail({ domain: 'example.com' });
     const name = 'philip'
     const surname = 'fry'
     await DataBase.addUser(email, name, surname)
@@ -57,7 +58,6 @@ describe('Put Preferencies tests', () => {
     const responseBody = JSON.parse(response.payload)
     expect(validateUserDoesntExist(responseBody)).toBeTruthy()
     expect(responseBody.code).toBe(errorCodes.USER_DOESNT_EXIST)
-
   })
 
   afterAll(async () => {
