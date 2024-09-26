@@ -15,7 +15,7 @@ module.exports = function (fastify, opts, next) {
     reply
       .type('application/json')
       .code(201)
-      .send({ models })
+      .send({ models: models })
   })
   next()
 }

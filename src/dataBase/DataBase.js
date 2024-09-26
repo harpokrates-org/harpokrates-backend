@@ -58,7 +58,7 @@ class DataBase {
     const user = await this.userModel.findOneAndUpdate({ email },
       { $addToSet: { models: { name: modelName, url: modelURL } } },
       { new: true })
-    return { models: user.models }
+    return user.models
   }
 
   async getModels(email) {

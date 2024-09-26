@@ -21,16 +21,19 @@ const schema = {
   },
   response: {
     201: {
-      description: 'Created',
+      description: 'Success',
       type: 'object',
       properties: {
-        preferencies: {
-          type: 'object',
+        models: {
+          type: 'array',
           properties: {
-            modelName: {
+            _id: {
               type: 'string',
             },
-            modelURL: {
+            name: {
+              type: 'string',
+            },
+            url: {
               type: 'string',
             },
           },

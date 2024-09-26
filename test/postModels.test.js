@@ -22,14 +22,19 @@ describe('Put models tests', () => {
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
 
+    const modelName = 'MobileNet-Stego';
+    const modelURL = 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1';
     const response = await app.inject('POST', '/models', {
       email,
-      modelName: 'MobileNet-Stego',
-      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
+      modelName,
+      modelURL
     });
     expect(response.statusCode).toBe(201);
     const responseBody = JSON.parse(response.payload);
     expect(validateSuccess(responseBody)).toBeTruthy();
+    expect(responseBody.models.length).toBe(1)
+    expect(responseBody.models[0].name).toBe(modelName)
+    expect(responseBody.models[0].url).toBe(modelURL)
 
     await DataBase.deleteUser(email);
   });
