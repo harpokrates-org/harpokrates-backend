@@ -26,6 +26,12 @@ const schema = {
             url: {
               type: 'string',
             },
+            imageSize: {
+              type: 'number',
+            },
+            threshold: {
+              type: 'number',
+            },
           },
         },
       },

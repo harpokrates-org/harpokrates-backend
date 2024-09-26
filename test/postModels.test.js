@@ -24,17 +24,25 @@ describe('Put models tests', () => {
 
     const modelName = 'MobileNet-Stego';
     const modelURL = 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1';
-    const response = await app.inject('POST', '/models', {
+    const modelImageSize = 512
+    const modelThreshold = 0.8
+    const body = {
       email,
       modelName,
-      modelURL
-    });
+      modelURL,
+      modelImageSize,
+      modelThreshold
+    }
+
+    const response = await app.inject('POST', '/models', body);
     expect(response.statusCode).toBe(201);
     const responseBody = JSON.parse(response.payload);
     expect(validateSuccess(responseBody)).toBeTruthy();
     expect(responseBody.models.length).toBe(1)
     expect(responseBody.models[0].name).toBe(modelName)
     expect(responseBody.models[0].url).toBe(modelURL)
+    expect(responseBody.models[0].imageSize).toBe(modelImageSize)
+    expect(responseBody.models[0].threshold).toBe(modelThreshold)
 
     await DataBase.deleteUser(email);
   });
@@ -43,11 +51,19 @@ describe('Put models tests', () => {
     app = new FastifyWrapper();
     const email = 'nonexistinguser@mail.com';
 
-    const response = await app.inject('POST', '/models', {
+    const modelName = 'MobileNet-Stego';
+    const modelURL = 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1';
+    const modelImageSize = 512
+    const modelThreshold = 0.8
+    const body = {
       email,
-      modelName: 'MobileNet-Stego',
-      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-    });
+      modelName,
+      modelURL,
+      modelImageSize,
+      modelThreshold
+    }
+
+    const response = await app.inject('POST', '/models', body);
 
     expect(response.statusCode).toBe(401);
     const responseBody = JSON.parse(response.payload);
@@ -61,10 +77,17 @@ describe('Put models tests', () => {
     const name = 'philip';
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
+
+    const modelName = 'MobileNet-Stego';
+    const modelURL = 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1';
+    const modelImageSize = 512
+    const modelThreshold = 0.8
     const body = {
       email,
-      modelName: 'EfficientNet',
-      modelURL: 'www.kaggle.com'
+      modelName,
+      modelURL,
+      modelImageSize,
+      modelThreshold
     }
 
     // first time adding the model

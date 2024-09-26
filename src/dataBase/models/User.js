@@ -1,6 +1,11 @@
 var mongoose = require('mongoose');
 
-const modelSchema = new mongoose.Schema({ name: String, url: String });
+const modelSchema = new mongoose.Schema({ 
+  name: String, 
+  url: String,
+  imageSize: Number,
+  threshold: Number 
+});
 
 const userSchema = new mongoose.Schema({
   email: {

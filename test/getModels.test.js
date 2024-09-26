@@ -49,12 +49,20 @@ describe('GET models tests', () => {
     const surname = 'fry';
     await DataBase.addUser(email, name, surname);
 
-    // Add one model
-    await app.inject('POST', '/models', {
+    const modelName = 'MobileNet-Stego';
+    const modelURL = 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1';
+    const modelImageSize = 512
+    const modelThreshold = 0.8
+    const body = {
       email,
-      modelName: 'MobileNet-Stego',
-      modelURL: 'https://www.kaggle.com/models/user/mobilenet-stego/TfJs/default/1',
-    });
+      modelName,
+      modelURL,
+      modelImageSize,
+      modelThreshold
+    }
+
+    // Add one model
+    await app.inject('POST', '/models', body);
 
     const response = await app.inject('GET', `/models?email=${email}`);
     expect(response.statusCode).toBe(200);

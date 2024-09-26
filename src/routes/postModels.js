@@ -11,7 +11,13 @@ module.exports = function (fastify, opts, next) {
     onSend: [fastify.logReply],
     schema,
   }, async function (request, reply) {
-    const models = await UserManager.addModel(request.body.email, request.body.modelName, request.body.modelURL)
+    const models = await UserManager.addModel(
+      request.body.email, 
+      request.body.modelName, 
+      request.body.modelURL,
+      request.body.modelImageSize,
+      request.body.modelThreshold
+    )
     reply
       .type('application/json')
       .code(201)

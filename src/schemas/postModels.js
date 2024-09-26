@@ -15,9 +15,17 @@ const schema = {
       modelURL: {
         type: 'string',
         description: 'The model URL'
+      },
+      modelImageSize: {
+        type: 'number',
+        description: 'The model expected Image Size'
+      },
+      modelThreshold: {
+        type: 'number',
+        description: 'The model Threshold'
       }
     },
-    required: ['email', 'modelName', 'modelURL'],
+    required: ['email', 'modelName', 'modelURL', 'modelImageSize', 'modelThreshold'],
   },
   response: {
     201: {
@@ -35,6 +43,12 @@ const schema = {
             },
             url: {
               type: 'string',
+            },
+            imageSize: {
+              type: 'number',
+            },
+            threshold: {
+              type: 'number',
             },
           },
         },
