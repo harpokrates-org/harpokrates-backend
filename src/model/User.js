@@ -27,6 +27,10 @@ class User {
     return await DataBase.userHasModel(this.email, modelName);
   }
 
+  async hasModelById(modelID) {
+    return await DataBase.userHasModelById(this.email, modelID);
+  }
+
   async addModel(modelName, modelURL, modelImageSize, modelThreshold) {
     return await DataBase.addModel(
       this.email,
@@ -39,6 +43,10 @@ class User {
 
   async getModels() {
     return await DataBase.getModels(this.email);
+  }
+
+  async deleteModels(modelID) {
+    return await DataBase.deleteModels(this.email, modelID);
   }
 }
 
