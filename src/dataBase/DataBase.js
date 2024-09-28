@@ -58,6 +58,13 @@ class DataBase {
     });
   }
 
+  async userHasModelById(email, modelID) {
+    return await this.userModel.exists({
+      email: email,
+      'models._id': modelID,
+    });
+  }
+
   async addModel(email, modelName, modelURL, modelImageSize, modelThreshold) {
     const user = await this.userModel.findOneAndUpdate(
       { email },
@@ -78,6 +85,17 @@ class DataBase {
 
   async getModels(email) {
     const user = await this.userModel.findOne({ email });
+    return user.models;
+  }
+
+  async deleteModels(email, modelID) {
+    const user = await this.userModel.findOneAndUpdate(
+      {
+        email: email,
+      },
+      { $pull: { models: { _id: modelID } } },
+      { new: true }
+    );
     return user.models;
   }
 

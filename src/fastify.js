@@ -12,7 +12,7 @@ const getUserPhotos = require('./routes/getUserPhotos.js')
 const putPreferencies = require('./routes/putPreferencies.js')
 const postModels = require('./routes/postModels.js')
 const getModels = require('./routes/getModels.js')
-
+const deleteModels = require('./routes/deleteModels.js')
 
 class FastifyWrapper {
   constructor() {
@@ -63,6 +63,7 @@ class FastifyWrapper {
     this.app.register(putPreferencies)
     this.app.register(postModels)
     this.app.register(getModels)
+    this.app.register(deleteModels)
   }
 }
 
