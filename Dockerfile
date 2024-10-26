@@ -18,4 +18,4 @@ RUN if [[ -z "$RENDER" ]]; then \
   fi; 
 
 ENV NODE_ENV "production"
-CMD node src/server.js 
+CMD node src/server.js  
