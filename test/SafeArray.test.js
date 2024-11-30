@@ -1,4 +1,4 @@
-const SafeArray = require("../src/model/SafeArray")
+const SafeArray = require('../src/model/SafeArray')
 
 describe('SafeArray tests', () => {
 
@@ -47,8 +47,21 @@ describe('SafeArray tests', () => {
     expect(array.getArray()[3]).toBe(arrayToPush2[1])
   })
 
-  afterAll(async () => {
-    app.close()
-    DataBase.close()
+  test('does include value', async () => {
+    const array = new SafeArray()
+    const arrayToPush = [ 1, 2, 3 ]
+    await array.pushArray(arrayToPush)
+
+    expect(array.includes(1)).toBe(true)
+    expect(array.includes(2)).toBe(true)
+    expect(array.includes(3)).toBe(true)
+  })
+
+  test('does not include value', async () => {
+    const array = new SafeArray()
+    const arrayToPush = [ 1, 2, 3 ]
+    await array.pushArray(arrayToPush)
+
+    expect(array.includes(4)).toBe(false)
   })
 })

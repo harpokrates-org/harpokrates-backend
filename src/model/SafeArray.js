@@ -9,6 +9,10 @@ class SafeArray {
   getArray() {
     return this.array
   }
+
+  includes(value) {
+    return this.array.includes(value)
+  }
   
   async pushValue(value) {
     let releaseMutex = await this.mutex.acquire()
