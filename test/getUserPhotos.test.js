@@ -2,7 +2,7 @@ require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
-const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWrapper')
+const { ControlledFlickrCallerInstance: FlickrCaller } = require('../src/model/ControlledFlickrCaller')
 const schema = require('../src/schemas/getUserPhotos')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
@@ -21,7 +21,7 @@ describe('Get Photos tests', () => {
     const userId = '184374196@N07'
     const count = 12;
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementationOnce(() => {
       return getPhotosSuccessMock(userId, count)
     }).mockImplementation(() => {
       return getSizesSuccessMock()
@@ -47,7 +47,7 @@ describe('Get Photos tests', () => {
     const userId = 'doesnotexist@N00'
     const count = 12;
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementationOnce(() => {
       return unknownUserMock()
     })
 

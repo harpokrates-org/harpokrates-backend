@@ -2,7 +2,7 @@ require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
-const { flickrWrapperInstance: FlickrWrapper, flickrMethods } = require('../src/model/FlickrWrapper')
+const { ControlledFlickrCallerInstance: FlickrCaller, flickrMethods } = require('../src/model/ControlledFlickrCaller')
 const schema = require('../src/schemas/getFavorites')
 const DataBase = require('../src/dataBase/DataBase')
 const { successMock: getFavoritesSuccessMock } = require('./mocks/getFavoritesMock');
@@ -21,7 +21,7 @@ describe('Get Favorites tests', () => {
     const username = 'shutterbug_uk2012'
     let getFavoritesCallNumber = 0
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementation((method, params) => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementation((method, params) => {
       if (method === flickrMethods.getFavorites) {
         const response = getFavoritesSuccessMock(getFavoritesCallNumber)
         getFavoritesCallNumber += 3
