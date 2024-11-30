@@ -87,7 +87,6 @@ class FlickrWrapper {
         });
         return response
       }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
-      if (!userPhotoIDs || userPhotoIDs.length === 0) return
       await this.getFavoritesGraph(username, userPhotoIDs, photosPerFavorite, depth - 1, nodes, edges)
     } catch (error) { 
       console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
