@@ -12,7 +12,10 @@ class SafeArray {
   
   async pushValueIfNotExists(value) {
     let releaseMutex = await this.mutex.acquire()
-    if (this.array.includes(value)) return false
+    if (this.array.includes(value)){
+      releaseMutex()
+      return false
+    }
     this.array.push(value)
     releaseMutex()
     return true
