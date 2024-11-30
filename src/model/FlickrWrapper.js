@@ -56,7 +56,7 @@ class FlickrWrapper {
     nodes = new SafeArray(), edges = new SafeArray()) {
     
     const added = await nodes.pushValueIfNotExists(username)
-    if (depth === 0 || !added) return { nodes: nodes.getArray(), edges: edges.getArray() }
+    if (depth === 0 || !added || !photoIDs || photoIDs.length === 0) return { nodes: nodes.getArray(), edges: edges.getArray() }
 
     let promises = []
 
@@ -87,7 +87,6 @@ class FlickrWrapper {
         });
         return response
       }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
-      if (!userPhotoIDs || userPhotoIDs.length === 0) return
       await this.getFavoritesGraph(username, userPhotoIDs, photosPerFavorite, depth - 1, nodes, edges)
     } catch (error) { 
       console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
