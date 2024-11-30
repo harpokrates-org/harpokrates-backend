@@ -5,8 +5,10 @@ describe('SafeArray tests', () => {
   test('push one value', async () => {
     const array = new SafeArray()
     const value = 123
-    await array.pushValue(value)
 
+    const added = await array.pushValueIfNotExists(value)
+
+    expect(added).toBe(true)
     expect(array.getArray().length).toBe(1)
     expect(array.getArray()[0]).toBe(value)
   })
@@ -15,12 +17,28 @@ describe('SafeArray tests', () => {
     const array = new SafeArray()
     const value1 = 123
     const value2 = 456
-    await array.pushValue(value1)
-    await array.pushValue(value2)
 
+    const added1 = await array.pushValueIfNotExists(value1)
+    const added2 = await array.pushValueIfNotExists(value2)
+
+    expect(added1).toBe(true)
+    expect(added2).toBe(true)
     expect(array.getArray().length).toBe(2)
     expect(array.getArray()[0]).toBe(value1)
     expect(array.getArray()[1]).toBe(value2)
+  })
+
+  test('push repeted value', async () => {
+    const array = new SafeArray()
+    const value1 = 123
+
+    const added1 = await array.pushValueIfNotExists(value1)
+    const added2 = await array.pushValueIfNotExists(value1)
+
+    expect(added1).toBe(true)
+    expect(added2).toBe(false)
+    expect(array.getArray().length).toBe(1)
+    expect(array.getArray()[0]).toBe(value1)
   })
 
   test('push array', async () => {
@@ -45,23 +63,5 @@ describe('SafeArray tests', () => {
     expect(array.getArray()[1]).toBe(arrayToPush1[1])
     expect(array.getArray()[2]).toBe(arrayToPush2[0])
     expect(array.getArray()[3]).toBe(arrayToPush2[1])
-  })
-
-  test('does include value', async () => {
-    const array = new SafeArray()
-    const arrayToPush = [ 1, 2, 3 ]
-    await array.pushArray(arrayToPush)
-
-    expect(array.includes(1)).toBe(true)
-    expect(array.includes(2)).toBe(true)
-    expect(array.includes(3)).toBe(true)
-  })
-
-  test('does not include value', async () => {
-    const array = new SafeArray()
-    const arrayToPush = [ 1, 2, 3 ]
-    await array.pushArray(arrayToPush)
-
-    expect(array.includes(4)).toBe(false)
   })
 })

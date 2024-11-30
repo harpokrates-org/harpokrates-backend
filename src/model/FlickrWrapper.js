@@ -89,8 +89,8 @@ class FlickrWrapper {
   async getFavoritesGraph(username, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH,
     nodes = new SafeArray(), edges = new SafeArray()) {
     try{
-      await nodes.pushValue(username)
-      if (depth === 0) return { nodes: nodes.getArray(), edges: edges.getArray() }
+      const added = await nodes.pushValueIfNotExists(username)
+      if (depth === 0 || !added) return { nodes: nodes.getArray(), edges: edges.getArray() }
 
       let promises = []
 
@@ -104,10 +104,8 @@ class FlickrWrapper {
           continue
         }
         
-        for (const favorite of favorites) {
-          if (nodes.includes(favorite)) continue
+        for (const favorite of favorites)
           promises.push(this.nextUserGraph(favorite, photosPerFavorite, depth, nodes, edges))
-        }
       }
       
       await Promise.all(promises)
