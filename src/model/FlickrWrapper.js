@@ -1,21 +1,12 @@
-var { Semaphore, Mutex } = require('async-mutex');
-const { createFlickr } = require('flickr-sdk')
 const { UserNotFoundError, UnknownUserError, PhotoNotFoundError } = require('../errors/FlickerWrapperErrors')
-const { logFlickrCall } = require('../utils/logger')
 const util = require('util')
 const retry = require('async-await-retry');
+const SafeArray = require('../model/SafeArray')
+const { ControlledFlickrCallerInstance } = require('./ControlledFlickrCaller');
 
 const GRAPH_DEAPTH = 2
 const RETRY_FACTOR = process.env.NODE_ENV === 'production' ? 10 : 3;
 const MILISECS_IN_SEC = 1000
-
-const flickrMethods = {
-  findUserByUsername: 'flickr.people.findByUsername',
-  getPhotos: 'flickr.people.getPhotos',
-  getSizes: 'flickr.photos.getSizes',
-  getFavorites: 'flickr.photos.getFavorites',
-  getUserProfile: 'flickr.people.getInfo',
-}
 
 const errors = {
   'User not found': UserNotFoundError,
@@ -25,14 +16,12 @@ const errors = {
 
 class FlickrWrapper {
   constructor(){
-    this.caller = createFlickr(process.env.FLICKR_API_KEY).flickr
+    this.caller = ControlledFlickrCallerInstance
   }
 
   async getUser(username) {
     try{
-      const params = { username }
-      const body = await this.caller(flickrMethods.findUserByUsername, params)
-      logFlickrCall(flickrMethods.findUserByUsername, params, body)
+      const body = await this.caller.getUser(username)
       return body.user.id
     } catch(error){
       let errorToThrow = error
@@ -43,9 +32,7 @@ class FlickrWrapper {
 
   async getUserProfile(userID) {
     try{
-      const params = { user_id: userID }
-      const body = await this.caller(flickrMethods.getUserProfile, params)
-      logFlickrCall(flickrMethods.getUserProfile, params, body)
+      const body = await this.caller.getUserProfile(userID)
       const { nsid, iconfarm, iconserver } = body.person
       const photo = iconfarm !== 0 ? `https://farm${iconfarm}.staticflickr.com/${iconserver}/buddyicons/${nsid}.jpg` : null
       return {
@@ -63,14 +50,7 @@ class FlickrWrapper {
 
   async getPhotos(userID, perPage=100, minDate, maxDate) {
     try{
-      const params = { 
-        user_id: userID,
-        per_page: perPage, 
-        min_upload_date: minDate / MILISECS_IN_SEC, 
-        max_upload_date: maxDate / MILISECS_IN_SEC
-      }
-      const body = await this.caller(flickrMethods.getPhotos, params)
-      logFlickrCall(flickrMethods.getPhotos, params, body)
+      const body = await this.caller.getPhotos(userID, perPage, minDate / MILISECS_IN_SEC, maxDate / MILISECS_IN_SEC)
       const photos = body.photos.photo.map(p => ({ id: p.id, title: p.title }))
       return photos
     } catch(error){
@@ -81,10 +61,8 @@ class FlickrWrapper {
 
   async getSizes(photoID) {
     try{
-      const params = { photo_id: photoID }
-      const body = await this.caller(flickrMethods.getSizes, params)
-      logFlickrCall(flickrMethods.getSizes, params, body)
-      const sizes = body.sizes.size.map(p => ({ 
+      const body = await this.caller.getSizes(photoID)
+      const sizes = body.sizes.size.map(p => ({
         label: p.label, 
         width: p.width,
         height: p.height,
@@ -97,67 +75,60 @@ class FlickrWrapper {
     }
   }
 
-  async getUsersWhoHaveFavorited(mainUsername, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH, mutex = new Mutex(),
-    nodes = new Set([mainUsername]), edges = new Set(), queue = [mainUsername], semaphore = new Semaphore(process.env.FLICKR_CALLS_LIMIT)) {
+  async _getFavorites(photoID) {
     try{
-      const release = await mutex.acquire()
-      if (depth === 0 || queue.length === 0) {
-        release()
-        return { nodes: [ ...nodes ], edges: [] }
-      }
-      const nextUsername = queue.shift()
-      release()
-
-      let promises = []
-      for (const photoID of photoIDs) {
-        promises.push(this._getFavoritesInPhoto(nextUsername, photoID, photosPerFavorite, depth - 1, mutex, nodes, edges, queue, semaphore))
-      }
-
-      await Promise.all(promises)
-      return { nodes: Array.from(nodes), edges: Array.from(edges) }
+      const body = await this.caller.getFavorites(photoID)
+      const favorites = body.photo.person.map(p => p.username)
+      return favorites
     } catch(error){
       if (errors[error.message]) throw new errors[error.message]()
       throw error
     }
   }
 
-  /*
-  Para la foto dada por el photoID, obtiene agrega a nodes y edges los usuarios que hayan
-  dado favorito, a dicha foto y a la última foto subida por estos, recursivamente, dando
-  como resultado un grafo de profundidad máxima "profundidad".
-  Si hay algun error en la búsqueda de un usuario o foto, continúa la búsqueda del grafo
-  */
-  async _getFavoritesInPhoto(username, photoID, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore) {
-    try {
-      const params = { photo_id: photoID }
-      const [,release] = await semaphore.acquire()
-      const body = await this.caller(flickrMethods.getFavorites, params)
-      release()
-      logFlickrCall(flickrMethods.getFavorites, params, body)
-      const otherProm = body.photo.person.map(async user => {
-        const release = await mutex.acquire()
-        edges.add([user.username, username])
-        if (!nodes.has(user.username)) {
-          nodes.add(user.username)
-          queue.push(user.username)
-          release()
-  
-          try {
-            const userPhotoIDs = await retry(async () => {
-              return await this._getPhotoIds(user.username, photosPerFavorite);
-            }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
-            return await this.getUsersWhoHaveFavorited(user.username, userPhotoIDs, photosPerFavorite, depth, mutex, nodes, edges, queue, semaphore)
-          } catch (error) { 
-            console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
-            return 
-          }
-        } else {
-          release()
-        }
-      })
+  async getFavoritesGraph(username, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH,
+    nodes = new SafeArray(), edges = new SafeArray()) {
+    try{
+      await nodes.pushValue(username)
+      if (depth === 0) return { nodes: nodes.getArray(), edges: edges.getArray() }
 
-      return await Promise.all(otherProm)
-    } catch (error) { return }
+      let promises = []
+
+      for (const photoID of photoIDs) {
+        const favorites = await this._getFavorites(photoID)
+        
+        const newEdges = favorites.map(favorite => [ favorite, username ])
+        await edges.pushArray(newEdges)
+        if (depth === 1) {
+          await nodes.pushArray(favorites)
+          continue
+        }
+        
+        for (const favorite of favorites) {
+          if (nodes.includes(favorite)) continue
+          promises.push(this.nextUserGraph(favorite, photosPerFavorite, depth, nodes, edges))
+        }
+      }
+      
+      await Promise.all(promises)
+      return { nodes: nodes.getArray(), edges: edges.getArray() }
+    } catch(error){
+      if (errors[error.message]) throw new errors[error.message]()
+      throw error
+    }
+  }
+  
+  async nextUserGraph(username, photosPerFavorite, depth, nodes, edges) {
+    try {
+      let userPhotoIDs = await retry(async () => {
+        const response = await this._getPhotoIds(username, photosPerFavorite);
+        return response
+      }, null, {retriesMax: 4, interval: 100, exponential: true, factor: RETRY_FACTOR, jitter: 100});
+      await this.getFavoritesGraph(username, userPhotoIDs, photosPerFavorite, depth - 1, nodes, edges)
+    } catch (error) { 
+      console.log(util.inspect(error, {showHidden: false, depth: null, colors: true}))
+      return 
+    }
   }
 
   async _getPhotoIds(username, q){
@@ -188,6 +159,5 @@ class FlickrWrapper {
 }
 
 module.exports = {
-  flickrMethods: flickrMethods,
   flickrWrapperInstance: new FlickrWrapper()
 }
