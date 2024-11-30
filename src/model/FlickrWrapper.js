@@ -72,7 +72,7 @@ class FlickrWrapper {
       }
       
       for (const favorite of favorites)
-        promises.push(await this.nextUserGraph(favorite, photosPerFavorite, depth, nodes, edges))
+        promises.push(this.nextUserGraph(favorite, photosPerFavorite, depth, nodes, edges))
     }
     
     await Promise.all(promises)
