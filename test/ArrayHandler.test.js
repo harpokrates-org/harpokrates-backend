@@ -1,12 +1,12 @@
-const SafeArray = require('../src/model/SafeArray')
+const ArrayHandler = require('../src/model/ArrayHandler')
 
-describe('SafeArray tests', () => {
+describe('ArrayHandler tests', () => {
 
   test('push one value', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const value = 123
 
-    const added = await array.pushValueIfNotExists(value)
+    const added = array.pushValueUnique(value)
 
     expect(added).toBe(true)
     expect(array.getArray().length).toBe(1)
@@ -14,12 +14,12 @@ describe('SafeArray tests', () => {
   })
 
   test('push a second value', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const value1 = 123
     const value2 = 456
 
-    const added1 = await array.pushValueIfNotExists(value1)
-    const added2 = await array.pushValueIfNotExists(value2)
+    const added1 = array.pushValueUnique(value1)
+    const added2 = array.pushValueUnique(value2)
 
     expect(added1).toBe(true)
     expect(added2).toBe(true)
@@ -29,11 +29,11 @@ describe('SafeArray tests', () => {
   })
 
   test('push repeted value', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const value1 = 123
 
-    const added1 = await array.pushValueIfNotExists(value1)
-    const added2 = await array.pushValueIfNotExists(value1)
+    const added1 = array.pushValueUnique(value1)
+    const added2 = array.pushValueUnique(value1)
 
     expect(added1).toBe(true)
     expect(added2).toBe(false)
@@ -42,9 +42,9 @@ describe('SafeArray tests', () => {
   })
 
   test('push array', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const arrayToPush = [ 123, 456 ]
-    await array.pushArray(arrayToPush)
+    array.pushArray(arrayToPush)
 
     expect(array.getArray().length).toBe(2)
     expect(array.getArray()[0]).toBe(arrayToPush[0])
@@ -52,11 +52,11 @@ describe('SafeArray tests', () => {
   })
 
   test('push a second array', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const arrayToPush1 = [ 123, 456 ]
     const arrayToPush2 = [ 789, 100 ]
-    await array.pushArray(arrayToPush1)
-    await array.pushArray(arrayToPush2)
+    array.pushArray(arrayToPush1)
+    array.pushArray(arrayToPush2)
 
     expect(array.getArray().length).toBe(4)
     expect(array.getArray()[0]).toBe(arrayToPush1[0])
@@ -66,11 +66,11 @@ describe('SafeArray tests', () => {
   })
 
   test('push array unique', async () => {
-    const array = new SafeArray()
+    const array = new ArrayHandler()
     const arrayToPush1 = [ 123, 456 ]
     const arrayToPush2 = [ 123, 789, 100, 456 ]
-    await array.pushArrayUnique(arrayToPush1)
-    await array.pushArrayUnique(arrayToPush2)
+    array.pushArrayUnique(arrayToPush1)
+    array.pushArrayUnique(arrayToPush2)
 
     expect(array.getArray().length).toBe(4)
     expect(array.getArray()[0]).toBe(arrayToPush1[0])
