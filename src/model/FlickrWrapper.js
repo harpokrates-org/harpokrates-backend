@@ -1,6 +1,6 @@
 const util = require('util')
 const retry = require('async-await-retry');
-const SafeArray = require('../model/SafeArray')
+const ArrayHandler = require('../model/ArrayHandler')
 const { ControlledFlickrCallerInstance } = require('./ControlledFlickrCaller');
 
 const GRAPH_DEAPTH = 2
@@ -53,9 +53,9 @@ class FlickrWrapper {
   }
 
   async getFavoritesGraph(username, photoIDs, photosPerFavorite, depth = GRAPH_DEAPTH,
-    nodes = new SafeArray(), edges = new SafeArray()) {
+    nodes = new ArrayHandler(), edges = new ArrayHandler()) {
     
-    const added = await nodes.pushValueIfNotExists(username)
+    const added = nodes.pushValueUnique(username)
     if (depth === 0 || !added || !photoIDs || photoIDs.length === 0) return { nodes: nodes.getArray(), edges: edges.getArray() }
 
     let promises = []
@@ -65,9 +65,9 @@ class FlickrWrapper {
       if (!favorites || favorites.length === 0) continue
       
       const newEdges = favorites.map(favorite => [ favorite, username ])
-      await edges.pushArray(newEdges)
+      edges.pushArray(newEdges)
       if (depth === 1) {
-        await nodes.pushArrayUnique(favorites)
+        nodes.pushArrayUnique(favorites)
         continue
       }
       
