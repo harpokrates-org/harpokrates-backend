@@ -2,7 +2,7 @@ require('dotenv').config();
 const Ajv = require('ajv')
 
 const FastifyWrapper = require('../src/fastify')
-const { flickrWrapperInstance: FlickrWrapper } = require('../src/model/FlickrWrapper')
+const { ControlledFlickrCallerInstance: FlickrCaller } = require('../src/model/ControlledFlickrCaller')
 const schema = require('../src/schemas/getUserProfile')
 const DataBase = require('../src/dataBase/DataBase')
 const { errorCodes } = require('../src/errors/FlickerWrapperErrors');
@@ -19,7 +19,7 @@ describe('Get User Profile tests', () => {
     app = new FastifyWrapper()
     const mock = successMock()
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementationOnce(() => {
       return mock
     })
 
@@ -39,7 +39,7 @@ describe('Get User Profile tests', () => {
     app = new FastifyWrapper()
     const mock = noPhotoMock()
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementationOnce(() => {
       return mock
     })
 
@@ -58,7 +58,7 @@ describe('Get User Profile tests', () => {
     app = new FastifyWrapper()
     const userID = '000000000@N00'
 
-    jest.spyOn(FlickrWrapper, 'caller').mockImplementationOnce(() => {
+    jest.spyOn(FlickrCaller, 'caller').mockImplementationOnce(() => {
       return notFoundMock()
     })
 

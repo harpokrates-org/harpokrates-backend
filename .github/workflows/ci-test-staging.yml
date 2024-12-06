@@ -22,9 +22,11 @@ jobs:
           touch .env
           echo FLICKR_API_KEY=$FLICKR_API_KEY >> .env
           echo MONGO_URL=$MONGO_URL >> .env
+          echo FLICKR_CALLS_LIMIT=$FLICKR_CALLS_LIMIT >> .env
         env:
           FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
           MONGO_URL: ${{ secrets.MONGO_URL }}
+          FLICKR_CALLS_LIMIT: ${{ secrets.FLICKR_CALLS_LIMIT }}
       - run: npm test
 
 

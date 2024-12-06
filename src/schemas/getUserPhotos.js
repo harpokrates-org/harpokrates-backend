@@ -1,16 +1,29 @@
 const schema = {
   summary: 'Get Flickr Users Photos',
+  params: {
+    type: 'object',
+    properties: {
+      user_id: {
+        type: 'string',
+        description: 'The Flickr user\'s id'
+      },
+    }
+  },
   querystring: {
     type: 'object',
     properties: {
-      username: {
-        type: 'string',
-        description: 'The Flickr user\'s username'
-      },
       count: {
         type: 'string',
         description: 'The numbers of photos to be retrieved'
-      }
+      },
+      min_date: {
+        type: 'string',
+        description: 'The minimum date of the photos to be fetched. Format: unix timestamp'
+      },
+      max_date: {
+        type: 'string',
+        description: 'The maximum date of the photos to be fetched. Format: unix timestamp'
+      },
     }
   },
   response: {

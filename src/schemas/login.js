@@ -12,7 +12,13 @@ const schema = {
     required: ['email']
   },
   response: {
-    200: {},
+    200: {
+      preferencies: {
+        model: {
+          type: 'string',
+        }
+      }
+    },
     401: {
       description: 'Unauthorized',
       type: 'object',
